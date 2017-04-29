@@ -15,7 +15,9 @@ namespace ie {
 
 
 class Parser {
-    Parser
+public:
+
+private:
 };
 
 

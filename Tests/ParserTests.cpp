@@ -10,14 +10,18 @@
 //  Copyright (c) 2016 Jacob Milligan. All rights reserved.
 //
 
-#define CATCH_CONFIG_MAIN
-#include <catch.hpp>
+#define CATCH_CONFIG_RUNNER
+#include <catch/catch.hpp>
 
 #include <InferenceEngine/Parsing/CLIParser.hpp>
 #include <InferenceEngine/Parsing/Parser.hpp>
 
+#include <Path/Path.hpp>
+
 class ParserTestFixture {
 public:
+    static sky::Path root_;
+
     ParserTestFixture()
         : cli_("test app", "Runs unit tests")
     {}
@@ -54,15 +58,44 @@ public:
         cli_.parse(argc, argv);
     }
 
+    void cli_stock_test()
+    {
+        cli_ = ie::CLIParser("iengine", "Knowledge-Base engine");
+        cli_.add_positional(ie::CLIArgument("method",
+                                            "The inference method to use to "
+                                                "check for entailment"));
+        cli_.add_positional(ie::CLIArgument("filename",
+                                            "The file to read the Knowledge-Base from. Specified as relative "
+                                                "path from the binary directory"
+        ));
+
+        char pos1[] = "TT";
+        char pos2[] = "test1.txt";
+        char* argv[] = { &root_.str()[0], &pos1[0], &pos2[0], nullptr };
+        auto argc = get_argc(sizeof(argv), argv);
+
+        cli_.parse(argc, argv);
+    }
+
 protected:
     ie::CLIParser cli_;
     ie::Parser parser_;
-
 private:
     std::stringstream ss_;
     std::streambuf* coutbuf_;
-
 };
+
+sky::Path ParserTestFixture::root_ = "";
+
+int main(int argc, char** argv)
+{
+    ParserTestFixture::root_.assign(sky::Path::bin_path(argv));
+    ParserTestFixture::root_.append("../Tests");
+
+    int result = Catch::Session().run(argc, argv);
+
+    return ( result < 0xff ? result : 0xff );
+}
 
 TEST_CASE_METHOD(ParserTestFixture, "CLI parser prints help", "[help]")
 {
@@ -101,7 +134,17 @@ TEST_CASE_METHOD(ParserTestFixture, "CLI parses", "[cli]")
     REQUIRE(cli_.get_positional_result("test2") == "cormac");
 }
 
-TEST_CASE_METHOD(ParserTestFixture, "Parser opens file", "[parser]")
+TEST_CASE_METHOD(ParserTestFixture, "CLI parses app correctly", "[cli]")
 {
-    
+    cli_stock_test();
+
+    REQUIRE(cli_.get_positional_result("method") == "TT");
+    REQUIRE(cli_.get_positional_result("filename") == "test1.txt");
 }
+//
+//TEST_CASE_METHOD(ParserTestFixture, "Parser opens file correctly", "[parser]")
+//{
+//    cli_stock_test();
+//
+//    parser_.parse(cli_.get_positional_result("filename"));
+//}

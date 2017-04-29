@@ -18,6 +18,7 @@ add_executable(${PROJECT_NAME}
         ${PROJECT_SOURCE_DIR}/Source/InferenceEngine/Main.cpp
         "${SRC}")
 target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/Deps/Path)
+target_link_libraries(${PROJECT_NAME} skyrocket_path)
 
 # Build static library for testing
 add_library(InferenceLib "${SRC}")
