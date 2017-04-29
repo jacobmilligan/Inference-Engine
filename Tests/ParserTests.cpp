@@ -141,10 +141,10 @@ TEST_CASE_METHOD(ParserTestFixture, "CLI parses app correctly", "[cli]")
     REQUIRE(cli_.get_positional_result("method") == "TT");
     REQUIRE(cli_.get_positional_result("filename") == "test1.txt");
 }
-//
-//TEST_CASE_METHOD(ParserTestFixture, "Parser opens file correctly", "[parser]")
-//{
-//    cli_stock_test();
-//
-//    parser_.parse(cli_.get_positional_result("filename"));
-//}
+
+TEST_CASE_METHOD(ParserTestFixture, "Parser opens file correctly", "[parser]")
+{
+    cli_stock_test();
+
+    parser_.parse(cli_.get_positional_result("filename"));
+}

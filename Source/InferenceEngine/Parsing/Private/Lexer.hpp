@@ -1,5 +1,5 @@
 //
-//  Parser.hpp
+//  Lexer.hpp
 //  InferenceEngine
 //
 //  --------------------------------------------------------------
@@ -10,17 +10,3 @@
 //
 
 #pragma once
-
-#include <Path/Path.hpp>
-
-namespace ie {
-
-
-class Parser {
-public:
-    void parse(const sky::Path& filepath);
-private:
-};
-
-
-}

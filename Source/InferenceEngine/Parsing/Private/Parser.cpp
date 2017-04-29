@@ -1,5 +1,5 @@
 //
-//  Parser.hpp
+//  Parser.cpp
 //  InferenceEngine
 //
 //  --------------------------------------------------------------
@@ -9,18 +9,18 @@
 //  Copyright (c) 2016 Jacob Milligan. All rights reserved.
 //
 
-#pragma once
+#include "InferenceEngine/Parsing/Parser.hpp"
+#include "InferenceEngine/Parsing/Private/Lexer.hpp"
 
 #include <Path/Path.hpp>
 
 namespace ie {
 
 
-class Parser {
-public:
-    void parse(const sky::Path& filepath);
-private:
-};
+void Parser::parse(const sky::Path& filepath)
+{
+
+}
 
 
 }
