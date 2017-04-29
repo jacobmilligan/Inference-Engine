@@ -1,1 +1,1 @@
-add_sources(main.cpp)
+add_sources(Main.cpp)
