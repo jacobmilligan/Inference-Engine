@@ -1,1 +1,3 @@
-add_sources(Private/CLIParser.cpp)
+add_sources(Private/CLIParser.cpp
+        Private/Lexer.cpp
+        Private/Parser.cpp)

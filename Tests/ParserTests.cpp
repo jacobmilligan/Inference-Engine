@@ -15,6 +15,7 @@
 
 #include <InferenceEngine/Parsing/CLIParser.hpp>
 #include <InferenceEngine/Parsing/Parser.hpp>
+#include <InferenceEngine/Parsing/Private/Lexer.hpp>
 
 #include <Path/Path.hpp>
 
@@ -142,9 +143,57 @@ TEST_CASE_METHOD(ParserTestFixture, "CLI parses app correctly", "[cli]")
     REQUIRE(cli_.get_positional_result("filename") == "test1.txt");
 }
 
-TEST_CASE_METHOD(ParserTestFixture, "Parser opens file correctly", "[parser]")
+TEST_CASE_METHOD(ParserTestFixture, "Lexer tokenizes correctly", "[lexer]")
 {
-    cli_stock_test();
+    auto lexer = ie::Lexer();
+    std::string kb_string = "TELL\n"
+        "p2=> p3; p3 => p1; c => e; b&e => f; f&g => h; p1=>d; p1&p3 => c; a; b; p2; f| g;(p&g) => (p |g) & !a;\n"
+        "ASK\n"
+        "d";
 
-    parser_.parse(cli_.get_positional_result("filename"));
+    std::vector<ie::TokenType> correct_tokens = {
+        ie::TokenType::tell, // 0
+        ie::TokenType::symbol, ie::TokenType::implication, ie::TokenType::symbol, // 3
+        ie::TokenType::semicolon, // 4
+        ie::TokenType::symbol, ie::TokenType::implication, ie::TokenType::symbol, // 7
+        ie::TokenType::semicolon, // 8
+        ie::TokenType::symbol, ie::TokenType::implication, ie::TokenType::symbol, // 11
+        ie::TokenType::semicolon, // 12
+        ie::TokenType::symbol, ie::TokenType::conjunction, ie::TokenType::symbol, ie::TokenType::implication, ie::TokenType::symbol, // 17
+        ie::TokenType::semicolon, // 18
+        ie::TokenType::symbol, ie::TokenType::conjunction, ie::TokenType::symbol, ie::TokenType::implication, ie::TokenType::symbol, // 23
+        ie::TokenType::semicolon, // 24
+        ie::TokenType::symbol, ie::TokenType::implication, ie::TokenType::symbol, // 27
+        ie::TokenType::semicolon, // 28
+        ie::TokenType::symbol, ie::TokenType::conjunction, ie::TokenType::symbol, ie::TokenType::implication, ie::TokenType::symbol, // 33
+        ie::TokenType::semicolon, // 34
+        ie::TokenType::symbol, // 35
+        ie::TokenType::semicolon, // 36
+        ie::TokenType::symbol, // 37
+        ie::TokenType::semicolon, // 38
+        ie::TokenType::symbol, // 39
+        ie::TokenType::semicolon, // 40
+        ie::TokenType::symbol, ie::TokenType::disjunction, ie::TokenType::symbol, // 43
+        ie::TokenType::semicolon, // 44
+        ie::TokenType::lparen, ie::TokenType::symbol, ie::TokenType::conjunction, ie::TokenType::symbol, ie::TokenType::rparen, ie::TokenType::implication, ie::TokenType::lparen, ie::TokenType::symbol, ie::TokenType::disjunction, ie::TokenType::symbol, ie::TokenType::rparen, ie::TokenType::conjunction, ie::TokenType::negation, ie::TokenType::symbol, // 58
+        ie::TokenType::semicolon, // 59
+        ie::TokenType::ask, // 60
+        ie::TokenType::symbol, // 61
+    };
+
+    lexer.lex(kb_string);
+
+    unsigned long index = 0;
+    for (auto iter = lexer.tokbegin(); iter != lexer.tokend(); ++iter) {
+        INFO("Token: " << index << " Lexeme: " << iter->literal);
+        REQUIRE(iter->type == correct_tokens[index]);
+        index++;
+    }
+}
+
+TEST_CASE_METHOD(ParserTestFixture, "Parser reads file", "[parser]")
+{
+    auto file = root_.get_relative("test1.txt");
+    ie::Parser parser;
+    REQUIRE_NOTHROW(parser.parse(sky::Path(file)));
 }

@@ -1,0 +1,4 @@
+TELL
+p2=> d;
+ASK
+d

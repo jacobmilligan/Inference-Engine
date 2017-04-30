@@ -1,11 +1,12 @@
 cmake_minimum_required(VERSION 3.7)
-project(InferenceEngine)
+project(iengine)
 
 set(CMAKE_CXX_STANDARD 14)
 
 include(${PROJECT_SOURCE_DIR}/CMake/AddSource.cmake)
 
 include_directories(${PROJECT_SOURCE_DIR}/Source)
+include_directories(${PROJECT_SOURCE_DIR}/Deps)
 
 add_subdirectory(${PROJECT_SOURCE_DIR}/Source)
 add_subdirectory(${PROJECT_SOURCE_DIR}/Deps/Path)
@@ -17,7 +18,6 @@ get_property(SRC GLOBAL PROPERTY SOURCE_LIST)
 add_executable(${PROJECT_NAME}
         ${PROJECT_SOURCE_DIR}/Source/InferenceEngine/Main.cpp
         "${SRC}")
-target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/Deps/Path)
 target_link_libraries(${PROJECT_NAME} skyrocket_path)
 
 # Build static library for testing

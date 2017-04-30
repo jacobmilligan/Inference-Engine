@@ -11,6 +11,8 @@
 
 #pragma once
 
+#include "InferenceEngine/AST/ASTNode.hpp"
+
 #include <Path/Path.hpp>
 
 namespace ie {
@@ -20,6 +22,14 @@ class Parser {
 public:
     void parse(const sky::Path& filepath);
 private:
+    std::vector<ASTNode::Child> ast_;
+
+    std::string slurp(const std::string& path);
+
+    ASTNode::Child parse_sentence(Lexer::Iterator& iter);
+    ASTNode::Child parse_atomic(Lexer::Iterator& iter);
+    ASTNode::Child parse_complex_sentence(Lexer::Iterator& iter);
+    ASTNode::Child parse_negation(Lexer::Iterator& iter);
 };
 
 
