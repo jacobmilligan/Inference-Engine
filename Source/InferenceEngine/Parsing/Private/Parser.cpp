@@ -15,6 +15,7 @@
 
 #include <fstream>
 #include <sstream>
+#include <stdexcept>
 
 namespace ie {
 
@@ -22,6 +23,9 @@ namespace ie {
 void Parser::parse(const sky::Path& filepath)
 {
     auto contents = slurp(filepath.str());
+    if ( contents.size() <= 0 )
+        throw std::length_error("File is empty or does not exist at that path");
+
     Lexer lexer;
     lexer.lex(contents);
 
@@ -29,15 +33,9 @@ void Parser::parse(const sky::Path& filepath)
         if ( iter->type == TokenType::eof )
             break;
 
+        min_precedence_ = 0;
         ast_.push_back(parse_sentence(iter));
     }
-
-    ie::ASTPrinter printer;
-    for ( auto& n : ast_ ) {
-        n->accept(printer);
-        std::cout << ";";
-    }
-
 }
 
 std::string Parser::slurp(const std::string& path)
@@ -52,63 +50,61 @@ std::string Parser::slurp(const std::string& path)
 
 ASTNode::Child Parser::parse_sentence(Lexer::Iterator& iter)
 {
-    if ( iter->type == TokenType::ask || iter->type == TokenType::tell )
+    if ( iter->type == TokenType::tell || iter->type == TokenType::ask )
         ++iter;
 
-    auto lookahead = ++iter;
-    iter--;
+    ASTNode::Child lhs;
+    ASTNode::Child rhs;
+    Token op;
+    auto lookahead = *(++iter);
+    --iter;
 
-    switch (lookahead->type) {
-        case TokenType::conjunction:
-        case TokenType::disjunction:
-        case TokenType::implication:
-        case TokenType::negation:
-            return parse_complex_sentence(iter);
-        default:
-            break;
+    if ( is_binary(lookahead.type) || iter->type == TokenType::lparen) {
+        lhs = parse_complex_sentence(iter);
+        op = *iter;
+        rhs = parse_complex_sentence(++iter);
+        
+        if ( is_unary(lookahead) ) {
+            return rhs;
+        }
+        
+        lookahead = *(++iter);
+        iter--;
+        if ( iter->type == TokenType::rparen ) {
+            lhs = std::make_unique<ComplexSentence>(
+                ComplexSentence(std::move(lhs), op.type, std::move(rhs))
+            );
+
+            return std::make_unique<ComplexSentence>(
+                ComplexSentence(std::move(lhs),
+                                lookahead.type, parse_sentence(++iter))
+            );
+        }
+
+        return std::make_unique<ComplexSentence>(
+            ComplexSentence(std::move(lhs), op.type, std::move(rhs))
+        );
     }
 
-    switch (iter->type) {
-        case TokenType::symbol: return parse_atomic(iter);
-
-        case TokenType::truth:break;
-        case TokenType::falsity:break;
-
-        case TokenType::ask:
-        case TokenType::tell:
-            ++iter;
-            break;
-
-        case TokenType::semicolon:break;
-        case TokenType::lparen: return parse_sentence(++iter);
-        case TokenType::rparen: //throw error on not symbol
-            break;
-
-        case TokenType::eof:break;
-        case TokenType::unknown:break;
-    }
-
-    auto complex = parse_complex_sentence(iter);
-    ++iter;
-    return complex;
+    return parse_atomic(iter);
 }
 
 ASTNode::Child Parser::parse_complex_sentence(Lexer::Iterator& iter)
 {
-    ASTNode::Child lhs;
+    ASTNode::Child rhs;
+    auto cur = *iter;
 
-    if ( iter->type == TokenType::lparen )
-        lhs = parse_sentence(++iter);
+    if ( cur.type == TokenType::negation ) {
+        return parse_negation(++iter);
+    }
 
-    if ( iter->type == TokenType::symbol )
-        lhs = parse_atomic(iter);
+    if ( cur.type == TokenType::lparen )
+        return parse_sentence(++iter);
 
-    if ( iter->type == TokenType::negation )
-        lhs = nullptr;
+    if ( is_atomic(cur) )
+        return parse_atomic(iter);
 
-    return std::make_unique<ComplexSentence>(
-        ComplexSentence(std::move(lhs), iter->type, parse_sentence(++iter))
-    );
+    return nullptr;
 }
 
 ASTNode::Child Parser::parse_atomic(Lexer::Iterator& iter)
@@ -120,8 +116,29 @@ ASTNode::Child Parser::parse_atomic(Lexer::Iterator& iter)
 
 ASTNode::Child Parser::parse_negation(Lexer::Iterator& iter)
 {
-    return std::make_unique<ComplexSentence>(nullptr, iter->type,
-                                             parse_sentence(++iter));
+    return std::make_unique<ComplexSentence>(nullptr, TokenType::negation,
+                                             parse_sentence(iter));
 }
+
+bool Parser::is_atomic(const Token& cur)
+{
+    return cur.type == TokenType::symbol;
+}
+
+bool Parser::is_binary(const TokenType type)
+{
+    return type >= TokenType::negation && type < TokenType::symbol;
+}
+
+bool Parser::is_unary(const Token& tok)
+{
+    return tok.type == TokenType::negation;
+}
+
+std::vector<ASTNode::Child>& Parser::ast()
+{
+    return ast_;
+}
+
 
 }

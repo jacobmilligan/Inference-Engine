@@ -40,11 +40,13 @@ enum class TokenType {
 struct Token {
     TokenType type;
     std::string literal;
+    uint16_t precedence;
 };
 
 class Lexer {
 public:
     using Iterator = std::vector<Token>::iterator;
+    using ReverseIterator = std::vector<Token>::reverse_iterator;
 
     Lexer();
 
@@ -55,7 +57,7 @@ public:
     Iterator tokbegin();
     Iterator tokend();
 private:
-    std::unordered_map<std::string, TokenType> lexeme_map_;
+    std::unordered_map<std::string, Token> lexeme_map_;
     std::vector<Token> tokens_;
     std::regex split_regex_;
     std::regex alphanumeric_;

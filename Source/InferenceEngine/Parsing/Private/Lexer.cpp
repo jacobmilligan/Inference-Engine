@@ -21,21 +21,21 @@ Lexer::Lexer()
       alphanumeric_("[A-Za-z0-9]+")
 {
     lexeme_map_ = {
-        std::make_pair("&", TokenType::conjunction),
-        std::make_pair("|", TokenType::disjunction),
-        std::make_pair("!", TokenType::negation),
-        std::make_pair("=>", TokenType::implication),
-        std::make_pair("TELL", TokenType::tell),
-        std::make_pair("tell", TokenType::tell),
-        std::make_pair("ASK", TokenType::ask),
-        std::make_pair("ask", TokenType::ask),
-        std::make_pair(";", TokenType::semicolon),
-        std::make_pair("(", TokenType::lparen),
-        std::make_pair(")", TokenType::rparen),
-        std::make_pair("TRUE", TokenType::truth),
-        std::make_pair("true", TokenType::truth),
-        std::make_pair("FALSE", TokenType::truth),
-        std::make_pair("false", TokenType::falsity)
+        std::make_pair("&", Token{TokenType::conjunction, "", 4}),
+        std::make_pair("|", Token{ TokenType::disjunction, "", 3 }),
+        std::make_pair("!", Token{ TokenType::negation, "", 5 }),
+        std::make_pair("=>", Token{ TokenType::implication, "", 2 }),
+        std::make_pair("TELL", Token{ TokenType::tell, "", 0 }),
+        std::make_pair("tell", Token{ TokenType::tell, "", 0 }),
+        std::make_pair("ASK", Token{ TokenType::ask, "", 0 }),
+        std::make_pair("ask", Token{ TokenType::ask, "", 0 }),
+        std::make_pair(";", Token{ TokenType::semicolon, "", 0 }),
+        std::make_pair("(", Token{ TokenType::lparen, "", 0 }),
+        std::make_pair(")", Token{ TokenType::rparen, "", 0 }),
+        std::make_pair("TRUE", Token{ TokenType::truth, "", 0 }),
+        std::make_pair("true", Token{ TokenType::truth, "", 0 }),
+        std::make_pair("FALSE", Token{ TokenType::truth, "", 0 }),
+        std::make_pair("false", Token{ TokenType::falsity, "", 0 })
     };
 }
 
@@ -46,19 +46,23 @@ void Lexer::lex(const std::string& str)
                                             str.end(),
                                             split_regex_);
     auto end = std::sregex_token_iterator();
-    TokenType type;
+    Token tok;
 
     for ( auto iter = begin; iter != end; ++iter) {
 
         if ( lexeme_map_.find(iter->str()) != lexeme_map_.end() ) {
-            type = lexeme_map_[iter->str()];
+            tok = lexeme_map_[iter->str()];
         } else if ( std::regex_match(iter->str(), alphanumeric_) ) {
-            type = TokenType::symbol;
+            tok.type = TokenType::symbol;
+            tok.precedence = 0;
         } else {
-            type = TokenType::unknown;
+            tok.type = TokenType::unknown;
+            tok.precedence = 0;
         }
 
-        tokens_.push_back(Token{ type, iter->str() });
+        tok.literal = iter->str();
+
+        tokens_.push_back(tok);
     }
 
     tokens_.push_back(Token{ TokenType::eof, "" });

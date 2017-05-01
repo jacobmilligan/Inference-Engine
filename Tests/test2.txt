@@ -1,4 +1,4 @@
 TELL
-p2=> d;
+p2=> d;(p&p4=>e)&!e;
 ASK
 d

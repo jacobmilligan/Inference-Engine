@@ -26,15 +26,17 @@ public:
 
     void visit(const AtomicSentence& atom) override
     {
-        std::cout << atom.get_value();
+        std::cout << " " << atom.get_value() << " ";
     }
 
     void visit(const ComplexSentence& complex) override
     {
-        std::cout << "(" << token_string(complex.connective()) << "(";
-        complex.left()->accept(*this);
+        std::cout << " (" << token_string(complex.connective());
+        if ( complex.left() != nullptr ) {
+            complex.left()->accept(*this);
+        }
         complex.right()->accept(*this);
-        std::cout << "))";
+        std::cout << ") ";
     }
 
 private:

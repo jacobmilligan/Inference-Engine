@@ -16,6 +16,7 @@
 #include <InferenceEngine/Parsing/CLIParser.hpp>
 #include <InferenceEngine/Parsing/Parser.hpp>
 #include <InferenceEngine/Parsing/Private/Lexer.hpp>
+#include <InferenceEngine/AST/Private/ASTPrinter.hpp>
 
 #include <Path/Path.hpp>
 
@@ -196,4 +197,22 @@ TEST_CASE_METHOD(ParserTestFixture, "Parser reads file", "[parser]")
     auto file = root_.get_relative("test1.txt");
     ie::Parser parser;
     REQUIRE_NOTHROW(parser.parse(sky::Path(file)));
+}
+
+TEST_CASE_METHOD(ParserTestFixture, "Parser gets grammer right", "[parser]")
+{
+    auto path = root_.get_relative("test1.txt");
+
+    ie::Parser parser;
+    parser.parse(path);
+
+    ie::ASTPrinter printer;
+
+    for ( auto& n : parser.ast() ) {
+        redirect_cout();
+        n->accept(printer);
+        reset_cout();
+
+        REQUIRE(get_cout() == "hey");
+    }
 }

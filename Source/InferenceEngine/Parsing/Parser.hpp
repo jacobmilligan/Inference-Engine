@@ -21,10 +21,17 @@ namespace ie {
 class Parser {
 public:
     void parse(const sky::Path& filepath);
+
+    std::vector<ASTNode::Child>& ast();
 private:
     std::vector<ASTNode::Child> ast_;
+    uint32_t min_precedence_;
 
     std::string slurp(const std::string& path);
+
+    bool is_atomic(const Token& cur);
+    bool is_binary(const TokenType type);
+    bool is_unary(const Token& tok);
 
     ASTNode::Child parse_sentence(Lexer::Iterator& iter);
     ASTNode::Child parse_atomic(Lexer::Iterator& iter);

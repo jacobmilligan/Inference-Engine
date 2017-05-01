@@ -21,8 +21,6 @@ class ASTNode {
 public:
     using Child = std::unique_ptr<ASTNode>;
     virtual void accept(ASTVisitor& visitor) const = 0;
-private:
-
 };
 
 
