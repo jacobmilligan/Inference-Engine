@@ -228,7 +228,7 @@ TEST_CASE_METHOD(ParserTestFixture, "Parser gets grammer right", "[parser]")
         n->accept(printer);
         reset_cout();
 
-        INFO("Clause: " << s << " Notation: " << get_cout()
+        INFO("Clause: " << s + 1 << " Notation: " << get_cout()
                         << " Expected: " << expected_notation[s]);
         REQUIRE(get_cout() == expected_notation[s]);
         s++;
@@ -274,8 +274,9 @@ TEST_CASE_METHOD(ParserTestFixture, "Test unparenthesized statements", "[parser]
     parser.parse(path);
 
     std::vector<std::string> expected_notation = {
+        "((b&f)=>((e&f)|g))",
+        "((b&f)=>(((e&f)|(!g))=>b))",
         "(b=>(q|(r&s)))",
-        "((b&f)=>(((e&f)|(!g))=>b))"
     };
 
     unsigned long s = 0;

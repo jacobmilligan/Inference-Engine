@@ -41,6 +41,7 @@ struct Token {
     TokenType type;
     std::string literal;
     uint16_t precedence;
+    uint32_t pos;
 };
 
 class Lexer {

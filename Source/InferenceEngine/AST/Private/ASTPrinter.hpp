@@ -27,7 +27,6 @@ public:
     void visit(const AtomicSentence& atom) override
     {
         std::cout << atom.get_value();
-        //push_back(atom.get_value());
     }
 
     void visit(const ComplexSentence& complex) override
