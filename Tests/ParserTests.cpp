@@ -201,18 +201,95 @@ TEST_CASE_METHOD(ParserTestFixture, "Parser reads file", "[parser]")
 
 TEST_CASE_METHOD(ParserTestFixture, "Parser gets grammer right", "[parser]")
 {
-    auto path = root_.get_relative("test1.txt");
+    auto path = root_.get_relative("../../Tests/test1.txt");
 
     ie::Parser parser;
     parser.parse(path);
 
     ie::ASTPrinter printer;
 
+    std::vector<std::string> expected_notation = {
+        "(p2=>p3)",
+        "(p3=>p1)",
+        "(c=>e)",
+        "((b&e)=>f)",
+        "((f&g)=>h)",
+        "(p1=>d)",
+        "((p1&p3)=>c)",
+        "a",
+        "b",
+        "p2",
+        "d",
+    };
+
+    unsigned long s = 0;
     for ( auto& n : parser.ast() ) {
         redirect_cout();
         n->accept(printer);
         reset_cout();
 
-        REQUIRE(get_cout() == "hey");
+        INFO("Clause: " << s << " Notation: " << get_cout()
+                        << " Expected: " << expected_notation[s]);
+        REQUIRE(get_cout() == expected_notation[s]);
+        s++;
+
+        if ( s >= expected_notation.size() ) {
+            break;
+        }
+    }
+}
+
+TEST_CASE_METHOD(ParserTestFixture, "Test nested statements", "[parser]")
+{
+    auto path = root_.get_relative("../../Tests/test2.txt");
+
+    ie::Parser parser;
+    parser.parse(path);
+
+    std::vector<std::string> expected_notation = {
+        "(((((b&f)=>e)&f)|(!g))=>b)"
+    };
+
+    unsigned long s = 0;
+    ie::ASTPrinter printer;
+    for ( auto& n : parser.ast() ) {
+        redirect_cout();
+        n->accept(printer);
+        reset_cout();
+
+        REQUIRE(get_cout() == expected_notation[s]);
+        s++;
+
+        if ( s >= expected_notation.size() ) {
+            break;
+        }
+    }
+}
+
+TEST_CASE_METHOD(ParserTestFixture, "Test unparenthesized statements", "[parser]")
+{
+    auto path = root_.get_relative("../../Tests/test3.txt");
+
+    ie::Parser parser;
+    parser.parse(path);
+
+    std::vector<std::string> expected_notation = {
+        "(b=>(q|(r&s)))",
+        "((b&f)=>(((e&f)|(!g))=>b))"
+    };
+
+    unsigned long s = 0;
+    ie::ASTPrinter printer;
+    for ( auto& n : parser.ast() ) {
+        redirect_cout();
+        n->accept(printer);
+        reset_cout();
+
+        REQUIRE(get_cout() == expected_notation[s]);
+        s++;
+
+        if ( s >= expected_notation.size() ) {
+            break;
+        }
     }
 }

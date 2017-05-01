@@ -32,6 +32,7 @@ private:
     bool is_atomic(const Token& cur);
     bool is_binary(const TokenType type);
     bool is_unary(const Token& tok);
+    bool is_terminal(const TokenType type);
 
     ASTNode::Child parse_sentence(Lexer::Iterator& iter);
     ASTNode::Child parse_atomic(Lexer::Iterator& iter);
