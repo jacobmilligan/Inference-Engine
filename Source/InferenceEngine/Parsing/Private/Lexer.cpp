@@ -21,7 +21,7 @@ Lexer::Lexer()
       alphanumeric_("[A-Za-z0-9]+")
 {
     lexeme_map_ = {
-        std::make_pair("&", Token{TokenType::conjunction, "", 3}),
+        std::make_pair("&", Token{ TokenType::conjunction, "", 3 }),
         std::make_pair("|", Token{ TokenType::disjunction, "", 2 }),
         std::make_pair("!", Token{ TokenType::negation, "", 4 }),
         std::make_pair("=>", Token{ TokenType::implication, "", 1 }),

@@ -275,7 +275,7 @@ TEST_CASE_METHOD(ParserTestFixture, "Test unparenthesized statements", "[parser]
 
     std::vector<std::string> expected_notation = {
         "((b&f)=>((e&f)|g))",
-        "((b&f)=>(((e&f)|(!g))=>b))",
+        "(((b&f)=>((e&f)|(!g)))=>b)",
         "(b=>(q|(r&s)))",
     };
 
