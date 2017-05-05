@@ -181,6 +181,7 @@ TEST_CASE_METHOD(ParserTestFixture, "Lexer tokenizes correctly", "[lexer]")
         ie::TokenType::semicolon, // 59
         ie::TokenType::ask, // 60
         ie::TokenType::symbol, // 61
+        ie::TokenType::eof
     };
 
     lexer.lex(kb_string);
@@ -196,25 +197,144 @@ TEST_CASE_METHOD(ParserTestFixture, "Lexer tokenizes correctly", "[lexer]")
 TEST_CASE_METHOD(ParserTestFixture, "Parser reads file", "[parser]")
 {
     auto file = root_.get_relative("test1.txt");
+    auto contents = ie::Parser::preprocess(file);
+
     ie::Parser parser;
-    REQUIRE_NOTHROW(parser.parse(sky::Path(file)));
+    REQUIRE_NOTHROW(parser.parse(contents.tell));
 }
 
 TEST_CASE_METHOD(ParserTestFixture, "Parser gets grammer right", "[parser]")
 {
     auto path = root_.get_relative("test1.txt");
+    auto contents = ie::Parser::preprocess(path);
 
     ie::Parser parser;
-    parser.parse(path);
+    parser.parse(contents.tell);
 
     ie::ASTPrinter printer;
 
+    std::vector<std::string> expected_notation = {
+        "(p2=>p3)",
+        "(p3=>p1)",
+        "(c=>e)",
+        "((b&e)=>f)",
+        "((f&g)=>h)",
+        "(p1=>d)",
+        "((p1&p3)=>c)",
+        "a",
+        "b",
+        "p2",
+    };
+
+    unsigned long s = 0;
     for ( auto& n : parser.ast() ) {
         redirect_cout();
         n->accept(printer);
         reset_cout();
 
-        REQUIRE(get_cout() == "hey");
+        INFO("Clause: " << s + 1 << " Notation: " << get_cout()
+                        << " Expected: " << expected_notation[s]);
+        REQUIRE(get_cout() == expected_notation[s]);
+        s++;
+
+        if ( s >= expected_notation.size() ) {
+            break;
+        }
+    }
+}
+
+TEST_CASE_METHOD(ParserTestFixture, "Test nested statements", "[parser]")
+{
+    auto path = root_.get_relative("test2.txt");
+    auto contents = ie::Parser::preprocess(path);
+
+    ie::Parser parser;
+    parser.parse(contents.tell);
+
+    std::vector<std::string> expected_notation = {
+        "(((((b&f)=>e)&f)|(!g))=>b)"
+    };
+
+    unsigned long s = 0;
+    ie::ASTPrinter printer;
+    for ( auto& n : parser.ast() ) {
+        redirect_cout();
+        n->accept(printer);
+        reset_cout();
+
+        REQUIRE(get_cout() == expected_notation[s]);
+        s++;
+
+        if ( s >= expected_notation.size() ) {
+            break;
+        }
+    }
+}
+
+//TEST_CASE_METHOD(ParserTestFixture, "Test unparenthesized statements", "[parser]")
+//{
+//    auto path = root_.get_relative("test3.txt");
+//    auto contents = ie::Parser::preprocess(path);
+//
+//    ie::Parser parser;
+//    parser.parse(contents.tell);
+//
+//    std::vector<std::string> expected_notation = {
+//        "((b&f)=>((e&f)|g))",
+//        "(((b&f)=>((e&f)|(!g)))=>b)",
+//        "(b=>(q|(r&s)))",
+//    };
+//
+//    unsigned long s = 0;
+//    ie::ASTPrinter printer;
+//    for ( auto& n : parser.ast() ) {
+//        redirect_cout();
+//        n->accept(printer);
+//        reset_cout();
+//
+//        REQUIRE(get_cout() == expected_notation[s]);
+//        s++;
+//
+//        if ( s >= expected_notation.size() ) {
+//            break;
+//        }
+//    }
+//}
+
+TEST_CASE_METHOD(ParserTestFixture, "Test crazy negations", "[parser]")
+{
+    auto path = root_.get_relative("test4.txt");
+    auto contents = ie::Parser::preprocess(path);
+
+    ie::Parser parser;
+    parser.parse(contents.tell);
+
+    std::vector<std::string> expected_notation = {
+        "(p10=>(!p3))",
+        "((!p3)=>p1)",
+        "(z=>e)",
+        "(((!b)&e)=>f)",
+        "((f&(!g))=>h)",
+        "(p1=>d)",
+        "((p1&p3)=>p10)",
+        "(!a)",
+        "b",
+        "p2"
+    };
+
+    unsigned long s = 0;
+    ie::ASTPrinter printer;
+    for ( auto& n : parser.ast() ) {
+        redirect_cout();
+        n->accept(printer);
+        reset_cout();
+
+        REQUIRE(get_cout() == expected_notation[s]);
+        s++;
+
+        if ( s >= expected_notation.size() ) {
+            break;
+        }
     }
 }
 

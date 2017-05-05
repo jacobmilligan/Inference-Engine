@@ -1,1 +1,1 @@
-p15=> !p3; !p3 => p1; z => e; !b&e => f; f&!g => h; p1=>d; p1&p3 => p10; !a; b; p2; p; p10; z; g;
+b&f=>e&f|g;b&f=>e&f|!g=>b;b=>q|r&s;

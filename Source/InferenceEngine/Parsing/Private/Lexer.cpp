@@ -21,10 +21,10 @@ Lexer::Lexer()
       alphanumeric_("[A-Za-z0-9]+")
 {
     lexeme_map_ = {
-        std::make_pair("&", Token{TokenType::conjunction, "", 4}),
-        std::make_pair("|", Token{ TokenType::disjunction, "", 3 }),
-        std::make_pair("!", Token{ TokenType::negation, "", 5 }),
-        std::make_pair("=>", Token{ TokenType::implication, "", 2 }),
+        std::make_pair("&", Token{ TokenType::conjunction, "", 3 }),
+        std::make_pair("|", Token{ TokenType::disjunction, "", 2 }),
+        std::make_pair("!", Token{ TokenType::negation, "", 4 }),
+        std::make_pair("=>", Token{ TokenType::implication, "", 1 }),
         std::make_pair("TELL", Token{ TokenType::tell, "", 0 }),
         std::make_pair("tell", Token{ TokenType::tell, "", 0 }),
         std::make_pair("ASK", Token{ TokenType::ask, "", 0 }),
@@ -48,6 +48,7 @@ void Lexer::lex(const std::string& str)
     auto end = std::sregex_token_iterator();
     Token tok;
 
+    uint32_t pos = 0;
     for ( auto iter = begin; iter != end; ++iter) {
 
         if ( lexeme_map_.find(iter->str()) != lexeme_map_.end() ) {
@@ -61,8 +62,10 @@ void Lexer::lex(const std::string& str)
         }
 
         tok.literal = iter->str();
+        tok.pos = pos;
 
         tokens_.push_back(tok);
+        pos++;
     }
 
     tokens_.push_back(Token{ TokenType::eof, "" });

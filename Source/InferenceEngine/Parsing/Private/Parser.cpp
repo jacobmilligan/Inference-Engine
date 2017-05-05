@@ -15,26 +15,46 @@
 
 #include <fstream>
 #include <sstream>
-#include <stdexcept>
+#include <algorithm>
 
 namespace ie {
 
 
-void Parser::parse(const sky::Path& filepath)
+PreprocessingResult Parser::preprocess(const sky::Path& filepath)
 {
     auto contents = slurp(filepath.str());
     if ( contents.size() <= 0 )
         throw std::length_error("File is empty or does not exist at that path");
 
+    contents.erase(std::remove(contents.begin(), contents.end(), '\r'),
+                   contents.end());
+    contents.erase(std::remove(contents.begin(), contents.end(), '\n'),
+                   contents.end());
+
+    std::string tell = "TELL";
+    std::string ask = "ASK";
+    auto first = contents.find(tell);
+    auto last = contents.find("ASK");
+
+    if ( first != 0 )
+        return PreprocessingResult(contents, contents);
+
+    first += tell.size();
+
+    return PreprocessingResult(contents.substr(first, last - ask.size() - 1),
+                               contents.substr(last + ask.size(), contents.npos));
+}
+
+void Parser::parse(const std::string& str)
+{
     Lexer lexer;
-    lexer.lex(contents);
+    lexer.lex(str);
 
     for (auto iter = lexer.tokbegin(); iter != lexer.tokend(); ++iter) {
         if ( iter->type == TokenType::eof )
             break;
 
-        min_precedence_ = 0;
-        ast_.push_back(parse_sentence(iter));
+        ast_.push_back(parse_sentence(iter, 0));
     }
 }
 
@@ -48,91 +68,76 @@ std::string Parser::slurp(const std::string& path)
     return contents.str();
 }
 
-ASTNode::Child Parser::parse_sentence(Lexer::Iterator& iter)
+ASTNode::Child Parser::parse_sentence(Lexer::Iterator& iter, const uint32_t prec)
 {
-    if ( iter->type == TokenType::tell || iter->type == TokenType::ask )
-        ++iter;
-
     ASTNode::Child lhs;
-    ASTNode::Child rhs;
+    lhs = parse_atomic(iter);
+
     Token op;
-    auto lookahead = *(++iter);
-    --iter;
-
-    if ( is_binary(lookahead.type) || iter->type == TokenType::lparen) {
-        lhs = parse_complex_sentence(iter);
+    while ( true ) {
         op = *iter;
-        rhs = parse_complex_sentence(++iter);
-        
-        if ( is_unary(lookahead) ) {
-            return rhs;
-        }
-        
-        lookahead = *(++iter);
-        iter--;
-        if ( iter->type == TokenType::rparen ) {
-            lhs = std::make_unique<ComplexSentence>(
-                ComplexSentence(std::move(lhs), op.type, std::move(rhs))
-            );
 
-            return std::make_unique<ComplexSentence>(
-                ComplexSentence(std::move(lhs),
-                                lookahead.type, parse_sentence(++iter))
-            );
-        }
+        if ( !is_binary(op.type) || op.precedence < prec )
+            break;
 
-        return std::make_unique<ComplexSentence>(
-            ComplexSentence(std::move(lhs), op.type, std::move(rhs))
-        );
+        auto next_prec = prec + 2;
+        ++iter;
+        auto rhs = parse_sentence(iter, next_prec);
+        lhs = parse_connective(lhs, op, rhs);
     }
 
-    return parse_atomic(iter);
-}
-
-ASTNode::Child Parser::parse_complex_sentence(Lexer::Iterator& iter)
-{
-    ASTNode::Child rhs;
-    auto cur = *iter;
-
-    if ( cur.type == TokenType::negation ) {
-        return parse_negation(++iter);
-    }
-
-    if ( cur.type == TokenType::lparen )
-        return parse_sentence(++iter);
-
-    if ( is_atomic(cur) )
-        return parse_atomic(iter);
-
-    return nullptr;
+    return lhs;
 }
 
 ASTNode::Child Parser::parse_atomic(Lexer::Iterator& iter)
 {
     auto token = *iter;
+    if ( token.type == TokenType::lparen ) {
+        auto val = parse_sentence(++iter, 1);
+        if ( iter->type != TokenType::rparen ) {
+            std::string msg = "Unmatched '(' at pos:";
+            msg += std::to_string(iter->pos);
+            throw msg;
+        }
+
+        ++iter;
+        return val;
+    }
+
+    if ( token.type == TokenType::negation ) {
+        return parse_negation(++iter, token.precedence);
+    }
+
     ++iter;
     return std::make_unique<AtomicSentence>(AtomicSentence(token));
 }
 
-ASTNode::Child Parser::parse_negation(Lexer::Iterator& iter)
+ASTNode::Child Parser::parse_negation(Lexer::Iterator& iter, const uint32_t prec)
 {
-    return std::make_unique<ComplexSentence>(nullptr, TokenType::negation,
-                                             parse_sentence(iter));
+    return std::make_unique<ComplexSentence>(ComplexSentence(
+        nullptr, TokenType::negation, parse_sentence(iter, prec + 1))
+    );
 }
 
-bool Parser::is_atomic(const Token& cur)
+ASTNode::Child Parser::parse_connective(ASTNode::Child& lhs, const Token& connective,
+                                        ASTNode::Child& rhs)
 {
-    return cur.type == TokenType::symbol;
+    if ( lhs == nullptr ) {
+        std::string msg = "Unexpected NULL at position ";
+        msg += std::to_string(connective.pos - 1);
+
+        std::cout << msg;
+
+        throw msg;
+    }
+    return std::make_unique<ComplexSentence>(ComplexSentence(
+        std::move(lhs), connective.type, std::move(rhs))
+    );
 }
 
 bool Parser::is_binary(const TokenType type)
 {
     return type >= TokenType::negation && type < TokenType::symbol;
-}
-
-bool Parser::is_unary(const Token& tok)
-{
-    return tok.type == TokenType::negation;
 }
 
 std::vector<ASTNode::Child>& Parser::ast()

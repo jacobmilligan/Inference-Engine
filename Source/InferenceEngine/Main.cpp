@@ -73,7 +73,7 @@ void RunTT(){
     ie::TruthTable tt = ie::TruthTable(observations);
 
 
-    ie::Agent a = ie::Agent();
+    ie::Agent agent = ie::Agent();
 
     std::vector<ie::Symbol*> ask = std::vector<ie::Symbol*>();
     ask.push_back(new ie::Symbol("A", true));
@@ -97,9 +97,9 @@ void RunTT(){
 
 
     clock_t t;    t = clock();
-    Response res = a.TTentails(ask, observations, emptyRules, tt.GetTruthTableMatrix());
+    Response res = agent.TTentails(ask, observations, emptyRules, tt.GetTruthTableMatrix());
     t = clock() - t;
-    printf ("It took %d clicks (%f seconds).\n",t,((float)t)/CLOCKS_PER_SEC);
+    printf ("It took %lu clicks (%f seconds).\n",t,((float)t)/CLOCKS_PER_SEC);
 
     std::cout << "Infered? " << (res.Result ? "true" : "false") << " , " << "Models infered: " << res.ModalsInfered << std::endl;
 
