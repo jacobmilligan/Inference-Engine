@@ -19,9 +19,9 @@ class Sentence;
 
 class ASTVisitor {
 public:
-    virtual void visit(const Sentence& sentence) = 0;
-    virtual void visit(const AtomicSentence& atom) = 0;
-    virtual void visit(const ComplexSentence& complex) = 0;
+    virtual bool visit(const Sentence& sentence) = 0;
+    virtual bool visit(const AtomicSentence& atom) = 0;
+    virtual bool visit(const ComplexSentence& complex) = 0;
 };
 
 

@@ -14,14 +14,15 @@
 namespace ie {
 
 
-void SymbolFinder::visit(const Sentence& sentence)
+bool SymbolFinder::visit(const Sentence& sentence)
 {
-    sentence.accept(*this);
+    return sentence.accept(*this);
 }
 
-void SymbolFinder::visit(const AtomicSentence& atom)
+bool SymbolFinder::visit(const AtomicSentence& atom)
 {
     symbols_.push_back(atom.get_value());
+    return true;
 }
 
 }

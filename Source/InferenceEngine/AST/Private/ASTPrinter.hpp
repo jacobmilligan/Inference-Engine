@@ -20,16 +20,18 @@ namespace ie {
 
 class ASTPrinter : public ASTVisitor {
 public:
-    void visit(const Sentence& sentence) override
+    bool visit(const Sentence& sentence) override
     {
+        return true;
     }
 
-    void visit(const AtomicSentence& atom) override
+    bool visit(const AtomicSentence& atom) override
     {
         std::cout << atom.get_value();
+        return true;
     }
 
-    void visit(const ComplexSentence& complex) override
+    bool visit(const ComplexSentence& complex) override
     {
         std::cout << "(";
         if ( complex.left() != nullptr ) {
@@ -38,6 +40,7 @@ public:
         std::cout << token_string(complex.connective());
         complex.right()->accept(*this);
         std::cout << ")";
+        return true;
     }
 
 private:

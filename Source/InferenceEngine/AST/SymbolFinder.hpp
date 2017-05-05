@@ -20,9 +20,9 @@ namespace ie {
 
 class SymbolFinder : public ASTVisitor {
 public:
-    void visit(const Sentence& sentence) override;
+    bool visit(const Sentence& sentence) override;
 
-    void visit(const AtomicSentence& atom) override;
+    bool visit(const AtomicSentence& atom) override;
 
 private:
     std::vector<std::string> symbols_;
