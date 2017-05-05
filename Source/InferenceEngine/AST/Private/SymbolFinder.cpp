@@ -13,15 +13,41 @@
 
 namespace ie {
 
-
 void SymbolFinder::visit(const Sentence& sentence)
 {
-    sentence.accept(*this);
 }
 
 void SymbolFinder::visit(const AtomicSentence& atom)
 {
-    symbols_.push_back(atom.get_value());
+    if(AcceptableSymbol(atom)) {
+        symbols_.push_back(atom.get_value());
+    }
+}
+
+void SymbolFinder::visit(const ComplexSentence& complex) {
+    complex.right()->accept(*this);
+    if(complex.left() != NULL) {
+        complex.left()->accept(*this);
+    }
+}
+
+std::vector<std::string> SymbolFinder::GetSymbols() {
+    return symbols_;
+}
+
+bool SymbolFinder::AcceptableSymbol(const AtomicSentence& atom) {
+    std::string val = atom.get_value();
+
+    if(val == ";" || val == "=>" || val == "!" || val == "&" || val == "|"){
+        return false;
+    }
+
+    for(auto& sym : symbols_){
+        if(val == sym){
+            return false;
+        }
+    }
+    return true;
 }
 
 }

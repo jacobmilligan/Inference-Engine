@@ -19,6 +19,7 @@
 #include <InferenceEngine/AST/Private/ASTPrinter.hpp>
 
 #include <Path/Path.hpp>
+#include <InferenceEngine/AST/SymbolFinder.hpp>
 
 class ParserTestFixture {
 public:
@@ -92,7 +93,7 @@ sky::Path ParserTestFixture::root_ = "";
 int main(int argc, char** argv)
 {
     ParserTestFixture::root_.assign(sky::Path::bin_path(argv));
-    ParserTestFixture::root_.append("../Tests");
+    ParserTestFixture::root_.append("../../Tests");
 
     int result = Catch::Session().run(argc, argv);
 
@@ -215,4 +216,73 @@ TEST_CASE_METHOD(ParserTestFixture, "Parser gets grammer right", "[parser]")
 
         REQUIRE(get_cout() == "hey");
     }
+}
+
+TEST_CASE_METHOD(ParserTestFixture, "SymbolFinder gets all symbols test1.txt", "[ASTvisitor]")
+{
+    auto file = root_.get_relative("test1.txt");
+    ie::Parser parser;
+
+
+    parser.parse(sky::Path(file));
+
+    ie::SymbolFinder s;
+
+    for(auto& a: parser.ast()){
+        a->accept(s);
+    }
+
+    std::string outputString;
+
+    for(auto a : s.GetSymbols()) {
+        outputString += a + " ";
+    }
+
+    REQUIRE(outputString == "p3 p2 p1 p3 e c e b f g f h d p1 p3 p1 c a b p2 d ");
+}
+
+TEST_CASE_METHOD(ParserTestFixture, "SymbolFinder gets all symbols test2.txt", "[ASTvisitor]")
+{
+    auto file = root_.get_relative("test2.txt");
+    ie::Parser parser;
+
+
+    parser.parse(sky::Path(file));
+
+    ie::SymbolFinder s;
+
+    for(auto& a: parser.ast()){
+        a->accept(s);
+    }
+
+    std::string outputString;
+
+    for(auto a : s.GetSymbols()) {
+        outputString += a + " ";
+    }
+
+    REQUIRE(outputString == "d p2 e e p4 p d ");
+}
+
+TEST_CASE_METHOD(ParserTestFixture, "SymbolFinder gets all symbols test3.txt", "[ASTvisitor]")
+{
+    auto file = root_.get_relative("test3.txt");
+    ie::Parser parser;
+
+
+    parser.parse(sky::Path(file));
+
+    ie::SymbolFinder s;
+
+    for(auto& a: parser.ast()){
+        a->accept(s);
+    }
+
+    std::string outputString;
+
+    for(auto a : s.GetSymbols()) {
+        outputString += a + " ";
+    }
+
+    REQUIRE(outputString == "d p2 e e p4 p d ");
 }

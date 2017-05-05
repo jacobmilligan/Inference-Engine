@@ -11,6 +11,7 @@ namespace ie {
                                                   matrix& tempMatrix, std::vector<Symbol*> partialModelVal, double modalSize )
     {
         if(modalSize == 0){
+
             tempMatrix.push_back(partialModelVal);
             return;
         }

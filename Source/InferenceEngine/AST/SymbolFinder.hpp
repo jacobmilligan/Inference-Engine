@@ -18,14 +18,20 @@
 namespace ie {
 
 
-class SymbolFinder : public ASTVisitor {
+    class SymbolFinder : public ASTVisitor {
 public:
     void visit(const Sentence& sentence) override;
 
     void visit(const AtomicSentence& atom) override;
 
+    void visit(const ComplexSentence& complex) override;
+
+    std::vector<std::string> GetSymbols();
+
 private:
     std::vector<std::string> symbols_;
+
+    bool AcceptableSymbol(const AtomicSentence& atom);
 };
 
 

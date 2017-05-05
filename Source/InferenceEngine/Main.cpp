@@ -4,20 +4,34 @@
 //For testing atm (cc)
 #include <iostream>
 #include <cmath>
+#include <InferenceEngine/AST/SymbolFinder.hpp>
 #include "InferenceEngine/Core/Agent.hpp"
-
+#include "InferenceEngine/AST/Private/ASTPrinter.hpp"
 
 void RunTT();
 
 int main(int argc, char** argv)
 {
     auto path = sky::Path(sky::Path::bin_path(argv));
-    path.append("../Tests/test1.txt");
+    path.append("../Tests/test3.txt");
 
     ie::Parser parser;
     parser.parse(path.str());
 
-    RunTT();
+    ie::SymbolFinder s;
+
+    ie::ASTPrinter p;
+
+    for(auto& a: parser.ast()){
+        a->accept(p);
+    }
+
+
+//    for(auto a : s.GetSymbols()) {
+//        std::cout << a;
+//    }
+
+    //RunTT();
 
     return 0;
 }
