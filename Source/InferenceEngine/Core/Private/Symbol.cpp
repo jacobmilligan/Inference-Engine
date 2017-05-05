@@ -19,7 +19,7 @@ namespace ie {
     }
 
     Symbol::Symbol() {
-        value_ = NULL;
+        value_ = false;
         symbolName_ = "";
     }
 }
