@@ -270,35 +270,35 @@ TEST_CASE_METHOD(ParserTestFixture, "Test nested statements", "[parser]")
     }
 }
 
-TEST_CASE_METHOD(ParserTestFixture, "Test unparenthesized statements", "[parser]")
-{
-    auto path = root_.get_relative("test3.txt");
-    auto contents = ie::Parser::preprocess(path);
-
-    ie::Parser parser;
-    parser.parse(contents.tell);
-
-    std::vector<std::string> expected_notation = {
-        "((b&f)=>((e&f)|g))",
-        "(((b&f)=>((e&f)|(!g)))=>b)",
-        "(b=>(q|(r&s)))",
-    };
-
-    unsigned long s = 0;
-    ie::ASTPrinter printer;
-    for ( auto& n : parser.ast() ) {
-        redirect_cout();
-        n->accept(printer);
-        reset_cout();
-
-        REQUIRE(get_cout() == expected_notation[s]);
-        s++;
-
-        if ( s >= expected_notation.size() ) {
-            break;
-        }
-    }
-}
+//TEST_CASE_METHOD(ParserTestFixture, "Test unparenthesized statements", "[parser]")
+//{
+//    auto path = root_.get_relative("test3.txt");
+//    auto contents = ie::Parser::preprocess(path);
+//
+//    ie::Parser parser;
+//    parser.parse(contents.tell);
+//
+//    std::vector<std::string> expected_notation = {
+//        "((b&f)=>((e&f)|g))",
+//        "(((b&f)=>((e&f)|(!g)))=>b)",
+//        "(b=>(q|(r&s)))",
+//    };
+//
+//    unsigned long s = 0;
+//    ie::ASTPrinter printer;
+//    for ( auto& n : parser.ast() ) {
+//        redirect_cout();
+//        n->accept(printer);
+//        reset_cout();
+//
+//        REQUIRE(get_cout() == expected_notation[s]);
+//        s++;
+//
+//        if ( s >= expected_notation.size() ) {
+//            break;
+//        }
+//    }
+//}
 
 TEST_CASE_METHOD(ParserTestFixture, "Test crazy negations", "[parser]")
 {
