@@ -2,12 +2,20 @@ set(EXE_NAME InferenceTests)
 
 set(CMAKE_CXX_STANDARD 14)
 
-set(SOURCE_FILES
-        ParserTests.cpp)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
-add_executable(${EXE_NAME} ${SOURCE_FILES})
-target_link_libraries(${EXE_NAME} InferenceLib)
-target_link_libraries(${EXE_NAME} skyrocket_path)
+# Parser tests config
+set(PARSER_TESTS_NAME parser_tests)
+add_executable(${PARSER_TESTS_NAME} ParserTests.cpp)
+target_link_libraries(${PARSER_TESTS_NAME} InferenceLib)
+target_link_libraries(${PARSER_TESTS_NAME} skyrocket_path)
+target_include_directories(${PARSER_TESTS_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/Deps)
+target_include_directories(${PARSER_TESTS_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/Source)
 
-target_include_directories(${EXE_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/Deps)
-target_include_directories(${EXE_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/Source)
+# Visitor tests config
+set(VISITOR_TESTS_NAME visitor_tests)
+add_executable(${VISITOR_TESTS_NAME} VisitorTests.cpp)
+target_link_libraries(${VISITOR_TESTS_NAME} InferenceLib)
+target_link_libraries(${VISITOR_TESTS_NAME} skyrocket_path)
+target_include_directories(${VISITOR_TESTS_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/Deps)
+target_include_directories(${VISITOR_TESTS_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/Source)
