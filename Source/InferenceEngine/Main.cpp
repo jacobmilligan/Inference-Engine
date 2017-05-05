@@ -18,7 +18,7 @@ int main(int argc, char** argv)
     parser.parse(path.str());
 
     RunTT();
-
+  
     return 0;
 }
 
