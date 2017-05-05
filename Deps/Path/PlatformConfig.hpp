@@ -39,7 +39,7 @@ enum class Platform {
     unknown,
     mac,
     windows,
-    linux,
+    linuxos,
     ios,
     iphone_sim,
     android
@@ -51,7 +51,7 @@ enum class OSFamily {
     unknown,
     apple,
     microsoft,
-    linux,
+    linuxos,
     android
 };
 
@@ -103,8 +103,8 @@ const auto target_platform = Platform::mac;
 #elif defined(__linux__) || defined(__linux) || defined(linux)
     #undef SKYROCKET_OS_LINUX
     #define SKYROCKET_OS_LINUX 1
-    const auto target_family = OSFamily::linux;
-    const auto target_platform = Platform::linux;
+    const auto target_family = OSFamily::linuxos;
+    const auto target_platform = Platform::linuxos;
 
 #elif defined(__ANDROID__)
     #undef SKYROCKET_OS_ANDROID
