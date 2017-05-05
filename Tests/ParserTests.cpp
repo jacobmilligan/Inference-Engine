@@ -343,8 +343,8 @@ TEST_CASE_METHOD(ParserTestFixture, "SymbolFinder gets all symbols test1.txt", "
     auto file = root_.get_relative("test1.txt");
     ie::Parser parser;
 
-
-    parser.parse(sky::Path(file));
+    auto contents = parser.preprocess(file);
+    parser.parse(contents.tell);
 
     ie::SymbolFinder s;
 
@@ -366,8 +366,8 @@ TEST_CASE_METHOD(ParserTestFixture, "SymbolFinder gets all symbols test2.txt", "
     auto file = root_.get_relative("test2.txt");
     ie::Parser parser;
 
-
-    parser.parse(sky::Path(file));
+    auto contents = parser.preprocess(file);
+    parser.parse(contents.tell);
 
     ie::SymbolFinder s;
 
@@ -389,8 +389,8 @@ TEST_CASE_METHOD(ParserTestFixture, "SymbolFinder gets all symbols test3.txt", "
     auto file = root_.get_relative("test3.txt");
     ie::Parser parser;
 
-
-    parser.parse(sky::Path(file));
+    auto contents = parser.preprocess(file);
+    parser.parse(contents.tell);
 
     ie::SymbolFinder s;
 
@@ -405,4 +405,27 @@ TEST_CASE_METHOD(ParserTestFixture, "SymbolFinder gets all symbols test3.txt", "
     }
 
     REQUIRE(outputString == "d p2 e e p4 p d ");
+}
+
+TEST_CASE_METHOD(ParserTestFixture, "SymbolFinder gets all symbols test4.txt", "[ASTvisitor]")
+{
+    auto file = root_.get_relative("test4.txt");
+    ie::Parser parser;
+
+    auto contents = parser.preprocess(file);
+    parser.parse(contents.tell);
+
+    ie::SymbolFinder s;
+
+    for(auto& a: parser.ast()){
+        a->accept(s);
+    }
+
+    std::string outputString;
+
+    for(auto a : s.GetSymbols()) {
+        outputString += a + " ";
+    }
+
+    REQUIRE(outputString == "p3 p10 p1 e z f b h g d a p2 p15 p pp ");
 }

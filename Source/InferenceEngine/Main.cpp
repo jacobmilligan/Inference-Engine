@@ -8,36 +8,36 @@
 #include "InferenceEngine/Core/Agent.hpp"
 #include "InferenceEngine/AST/Private/ASTPrinter.hpp"
 
-void RunTT();
+void RunTT(std::vector<std::string> strVec);
 
 int main(int argc, char** argv)
 {
     auto path = sky::Path(sky::Path::bin_path(argv));
-    path.append("../Tests/test3.txt");
+    path.append("../Tests/test1.txt");
 
     ie::Parser parser;
-    parser.parse(path.str());
+    auto contents = parser.preprocess(path);
+    parser.parse(contents.tell);
 
     ie::SymbolFinder s;
 
-    ie::ASTPrinter p;
-
     for(auto& a: parser.ast()){
-        a->accept(p);
+        a->accept(s);
     }
 
 
-//    for(auto a : s.GetSymbols()) {
-//        std::cout << a;
-//    }
+    std::vector<std::string> strVec;
+    for(auto a : s.GetSymbols()) {
+        strVec.push_back(a);
+    }
 
-    //RunTT();
+    RunTT(strVec);
 
     return 0;
 }
 
 
-void RunTT(){
+void RunTT(std::vector<std::string> strVec){
     //Just all the possible symbols from world i.e. "P" "G" "W" "WT" "P1"
     std::vector<ie::Symbol*> observations = std::vector<ie::Symbol*>();
 
@@ -46,10 +46,7 @@ void RunTT(){
     std::vector<ie::Symbol*> rules = std::vector<ie::Symbol*>();
 
     //Setup a small modal to check against - with 10 true and 1 false
-    char c;
-    for(int i = 0; i < 5; i ++){
-        c = 'A' + (char)i;
-        std::string str = std::string(1, c);
+    for(auto& str : strVec){
         ie::Symbol* s = new ie::Symbol(str, true);
         observations.push_back(s);
     }
@@ -76,10 +73,7 @@ void RunTT(){
     ie::Agent agent = ie::Agent();
 
     std::vector<ie::Symbol*> ask = std::vector<ie::Symbol*>();
-    ask.push_back(new ie::Symbol("A", true));
-    ask.push_back(new ie::Symbol("B", true));
-    ask.push_back(new ie::Symbol("C", false));
-
+    ask.push_back(new ie::Symbol("p3", true));
     std:: cout << "Asking for: " << std::endl;
 
     for(auto& a : ask){
