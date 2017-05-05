@@ -15,19 +15,40 @@
 
 #include <fstream>
 #include <sstream>
-#include <stdexcept>
+#include <algorithm>
 
 namespace ie {
 
 
-void Parser::parse(const sky::Path& filepath)
+PreprocessingResult Parser::preprocess(const sky::Path& filepath)
 {
     auto contents = slurp(filepath.str());
     if ( contents.size() <= 0 )
         throw std::length_error("File is empty or does not exist at that path");
 
+    contents.erase(std::remove(contents.begin(), contents.end(), '\r'),
+                   contents.end());
+    contents.erase(std::remove(contents.begin(), contents.end(), '\n'),
+                   contents.end());
+
+    std::string tell = "TELL";
+    std::string ask = "ASK";
+    auto first = contents.find(tell);
+    auto last = contents.find("ASK");
+
+    if ( first != 0 )
+        return PreprocessingResult(contents, contents);
+
+    first += tell.size();
+
+    return PreprocessingResult(contents.substr(first, last - ask.size() - 1),
+                               contents.substr(last + ask.size(), contents.npos));
+}
+
+void Parser::parse(const std::string& str)
+{
     Lexer lexer;
-    lexer.lex(contents);
+    lexer.lex(str);
 
     for (auto iter = lexer.tokbegin(); iter != lexer.tokend(); ++iter) {
         if ( iter->type == TokenType::eof )
@@ -49,9 +70,6 @@ std::string Parser::slurp(const std::string& path)
 
 ASTNode::Child Parser::parse_sentence(Lexer::Iterator& iter, const uint32_t prec)
 {
-    if ( iter->type == TokenType::tell || iter->type == TokenType::ask )
-        ++iter;
-
     ASTNode::Child lhs;
     lhs = parse_atomic(iter);
 
