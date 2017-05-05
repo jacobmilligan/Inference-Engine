@@ -40,7 +40,7 @@ std::string Path::bin_path(char** argv)
     auto bufsize = static_cast<uint32_t>(PATH_MAX);
     auto result = readlink("/proc/self/exe", buffer, bufsize);
     
-    if ( result != 0 ) {
+    if ( result == 0 ) {
         printf("Path error: Unable to locate binary get_relative");
         return "";
     }
