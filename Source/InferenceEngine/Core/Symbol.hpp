@@ -17,11 +17,11 @@ namespace ie {
     public:
 
         Symbol();
-        //Symbol can be constructed as a reference to a modal or a value
-        Symbol(std::string s, bool val) : symbolName_ (s), value_(val) {
-        };
+
+        Symbol(std::string s, bool val) : symbolName_ (s), value_(val) {};
 
         bool GetValue();
+
         std::string GetSymbolName();
 
         void SetValue(bool val);

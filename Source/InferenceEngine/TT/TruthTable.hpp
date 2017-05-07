@@ -6,39 +6,52 @@
 #define PROJECT_TRUTHTABLE_HPP
 
 #include <vector>
+#include <InferenceEngine/AST/ClauseFinder.hpp>
 
 #include "InferenceEngine/Core/Symbol.hpp"
 #include "InferenceEngine/TT/TruthTable.hpp"
 
 namespace ie {
 
-    using matrix = std::vector <std::vector<Symbol *>>;
+using matrix = std::vector <std::vector<Symbol *>>;
 
-    class TruthTable {
-    private:
+class TruthTable {
+private:
 
-        double size_;
-        //symbols_ list following construction of truth table
-        std::vector<Symbol *> symbolList_;
+    int ruleNumber_ = 0;
+    //Will eventually be refactor to not need to be passed all symbols around and just just clauseFinder ref
+    std::vector<const ComplexSentence*> rules_;
 
-        //Truth table matrix itself - containing models(rows) of symbols
-        matrix matrixModals_;
+    double size_;
+    //symbols_ list following construction of truth table
+    std::vector<Symbol *> symbolList_;
 
-        void ConstructTruthTableRecursive(std::vector<Symbol *> symbols,
-                                          matrix& tempMatrix, std::vector<Symbol *> partialModelVal, double modalSize);
+    //Truth table matrix itself - containing models(rows) of symbols
+    matrix matrixModals_;
 
-    public:
+    void ConstructTruthTableRecursive(std::vector<Symbol *> symbols,
+                                      matrix& tempMatrix, std::vector<Symbol *> partialModelVal, double modalSize);
 
-        //Constructor to truth table:
-        //Truth table is calculated within the constructor
-        TruthTable(std::vector<Symbol *>& symbols);
+    std::map<std::string, bool> ConvertToMap(std::vector<Symbol*> symbolList);
 
-        //Return copy of truth table
-        matrix GetTruthTableMatrix();
+    const ComplexSentence* PopRule();
 
-        //Return copy of symbols used in truth table
-        std::vector<Symbol *> GetSymbolsList();
+    bool is_rules();
 
-    };
+public:
+
+    //Constructor to truth table:
+    //Truth table is calculated within the constructor
+    TruthTable(std::vector<Symbol *>& symbols, std::vector<const ComplexSentence*> kb_rules);
+
+    //Return copy of truth table
+    matrix GetTruthTableMatrix();
+
+    //Return copy of symbols used in truth table
+    std::vector<Symbol *> GetSymbolsList();
+
+
+
+};
 }
 #endif //PROJECT_TRUTHTABLE_HPP

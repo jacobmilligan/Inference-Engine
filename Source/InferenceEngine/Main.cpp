@@ -6,54 +6,61 @@
 #include <cmath>
 #include <InferenceEngine/AST/ResolutionVisitor.hpp>
 #include <InferenceEngine/AST/ClauseFinder.hpp>
+#include <InferenceEngine/AST/SymbolFinder.hpp>
 #include "InferenceEngine/Core/Agent.hpp"
 #include "InferenceEngine/AST/Private/ASTPrinter.hpp"
 
-void RunTT(std::vector<std::string> strVec);
+void RunTT(const ie::ClauseFinder& c, const ie::SymbolFinder& s);
 
 int main(int argc, char** argv)
 {
-    std::cout << "Comparison" << ( typeid(ie::ASTPrinter) == typeid(ie::ASTPrinter) );
 
     auto path = sky::Path(sky::Path::bin_path(argv));
-    path.append("../Tests/test3.txt");
+    path.append("../Tests/test2.txt");
 
     ie::Parser parser;
     auto contents = parser.preprocess(path);
     parser.parse(contents.tell);
 
-    ie::ClauseFinder s;
-    ie::ASTPrinter p;
+    ie::ClauseFinder clause;
+    ie::SymbolFinder sFind;
 
     for(auto& a: parser.ast()){
-        a->accept(s);
+        a->accept(clause);
+    }
+    for(auto& a: parser.ast()){
+        a->accept(sFind);
     }
 
 
-    std::vector<std::string> strVec;
-    for(auto a : s.rules() ) {
-        a->accept(p);
+    for(auto& str : sFind.get_symbols()){
+        std::cout << str << " " << std::endl;
     }
+
+
+//s
 //            std::cout << a;
 //            strVec.push_back(a);
 
-
-    //RunTT(strVec);
+    RunTT(clause, sFind);
 
     return 0;
 }
 
 
-void RunTT(std::vector<std::string> strVec){
+void RunTT(const ie::ClauseFinder& c, const ie::SymbolFinder& symFind){
+
+
     //Just all the possible symbols from world i.e. "P" "G" "W" "WT" "P1"
     std::vector<ie::Symbol*> observations = std::vector<ie::Symbol*>();
 
     //The rules for the world i.e. "P => Q", "W => Q", "^Z => R"
     //symbols_ will also have to be operators too
-    std::vector<ie::Symbol*> rules = std::vector<ie::Symbol*>();
+//    std::vector<ie::Symbol*> rules = std::vector<ie::Symbol*>();
+
 
     //Setup a small modal to check against - with 10 true and 1 false
-    for(auto& str : strVec){
+    for(auto& str : symFind.get_symbols()){
         ie::Symbol* s = new ie::Symbol(str, true);
         observations.push_back(s);
     }
@@ -63,31 +70,30 @@ void RunTT(std::vector<std::string> strVec){
     for(auto& a : observations){
         std::cout << a->GetSymbolName() << " - " << a->GetValue() << std::endl;
     }
+
+    ie::ASTPrinter printer;
+
+    for(auto& rule : c.rules()){
+        std::cout << "rule - ";
+        rule->accept(printer);
+        std::cout << std::endl;
+    }
+
     std::cout << std::endl;
+    std::cout << "Size of tree: " << pow(2, observations.size() + c.rules().size()) << std::endl;
 
-    //1 false value
-//    c += (char)1;
-//    std::string str = std::string(1, c);
-//    Symbol* s = new Symbol(str, false);
-//    observations.push_back(s);
-
-    std::cout << "Size of tree: " << pow(2, observations.size()) << std::endl;
-
-    ie::TruthTable tt = ie::TruthTable(observations);
+    ie::TruthTable tt = ie::TruthTable(observations, c.rules());
 
 
     ie::Agent agent = ie::Agent();
 
     std::vector<ie::Symbol*> ask = std::vector<ie::Symbol*>();
-    ask.push_back(new ie::Symbol("p3", true));
+    ask.push_back(new ie::Symbol("f", true));
     std:: cout << "Asking for: " << std::endl;
-
     for(auto& a : ask){
         std::cout << a->GetSymbolName() << " - " << a->GetValue() << std::endl;
     }
-
     std::cout << std::endl;
-
     //No rules at the moment
     std::vector<ie::Symbol*> emptyRules = std::vector<ie::Symbol*>();
 

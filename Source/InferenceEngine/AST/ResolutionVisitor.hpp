@@ -22,34 +22,23 @@ namespace ie {
 
     class ResolutionVisitor : public ASTVisitor {
 public:
-
     // old functions
-    void visit(const Sentence& sentence) override;
+    bool visit(const Sentence& sentence) override;
 
-    void visit(const AtomicSentence& atom) override;
+    bool visit(const AtomicSentence& atom) override;
 
-    void visit(const ComplexSentence& complex) override;
-
-    //return type functions
-    bool visit_return(const Sentence& sentence);
-
-    bool visit_return(const AtomicSentence& atom);
-
-    bool visit_return(const ComplexSentence& complex);
+    bool visit(const ComplexSentence& complex) override;
 
     std::vector<std::string> GetSymbols();
 
-    //Truth table symbols with actual values
-    void AddSymbolValues(std::vector<Symbol*> sym);
+    bool calculate(TokenType logic_operator, bool res1, bool res2);
 
-    bool calculate(Token a, Token b, Token connective);
-
-    bool GetSolution(const ComplexSentence& complex);
+    //Public call to return overall results
+    bool GetSolution(std::map<std::string, bool>& modal, const ComplexSentence& complex);
 
 private:
 
-    std::stack<std::string> _tokenFIFO;
-    std::vector<Symbol*> truthTableSymbolList_;
+    std::map<std::string, bool> symbol_values_;
 
     std::vector<std::string> symbols_;
 

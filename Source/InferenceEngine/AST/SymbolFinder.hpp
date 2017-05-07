@@ -24,6 +24,11 @@ public:
 
     bool visit(const AtomicSentence& atom) override;
 
+    bool visit(const ComplexSentence& complex) override;
+
+
+    std::vector<std::string> get_symbols() const;
+
 private:
     std::vector<std::string> symbols_;
 };

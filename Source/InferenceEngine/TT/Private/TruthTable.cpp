@@ -3,6 +3,7 @@
 //
 
 
+#include <InferenceEngine/AST/ResolutionVisitor.hpp>
 #include "InferenceEngine/TT/TruthTable.hpp"
 
 namespace ie {
@@ -12,7 +13,21 @@ namespace ie {
     {
         if(modalSize == 0){
 
-            tempMatrix.push_back(partialModelVal);
+            std::map<std::string, bool> map = ConvertToMap(partialModelVal);
+
+            ResolutionVisitor r;
+
+            for(auto rule : rules_) {
+                bool ruleValue = r.GetSolution(map, *rule);
+
+                //add new rule and its result as a single symbol to the truth table 'row'
+                partialModelVal.push_back(
+                        new Symbol("r" + std::to_string(ruleNumber_), ruleValue)
+                );
+
+                //add completed row
+                tempMatrix.push_back(partialModelVal);
+            }
             return;
         }
         else{
@@ -52,13 +67,39 @@ namespace ie {
         return symbolList_;
     }
 
-    TruthTable::TruthTable(std::vector<Symbol*>& symbols) {
+    TruthTable::TruthTable(std::vector<Symbol*>& symbols, std::vector<const ComplexSentence*> kb_rules) {
+
+        //Add current set of rules
+        rules_ = kb_rules;
+
         //Create new Truth Table
+
         symbolList_ = symbols;
         //matrixModals_ = ConstructTruthTable(symbols);
         matrixModals_ = std::vector<std::vector<Symbol*>>();
         std::vector<Symbol*> partialModel = std::vector<Symbol*>();
         ConstructTruthTableRecursive(symbols, matrixModals_, partialModel, symbols.size());
+    }
+
+    std::map<std::string, bool> TruthTable::ConvertToMap(const std::vector<Symbol*> symbolList){
+        std::map<std::string, bool> returnMap;
+
+        for(Symbol* s : symbolList){
+            returnMap[s->GetSymbolName()] = s->GetValue();
+        }
+
+        return returnMap;
+    }
+
+    const ComplexSentence* TruthTable::PopRule() {
+        auto* rule = rules_[rules_.size()-1];
+        rules_.pop_back();
+        ruleNumber_++;
+        return rule;
+    }
+
+    bool TruthTable::is_rules(){
+        return rules_.empty();
     }
 
 

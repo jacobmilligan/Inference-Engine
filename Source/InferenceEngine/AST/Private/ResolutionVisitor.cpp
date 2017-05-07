@@ -14,40 +14,60 @@
 
 namespace ie {
 
-void ResolutionVisitor::visit(const Sentence& sentence)
+bool ResolutionVisitor::visit(const Sentence& sentence)
 {
     sentence.accept(*this);
 }
 
-void ResolutionVisitor::visit(const AtomicSentence& atom)
+bool ResolutionVisitor::visit(const AtomicSentence& atom)
 {
-    _tokenFIFO.push(atom.get_value());
+    return solve(atom.get_token());
 }
 
-void ResolutionVisitor::visit(const ComplexSentence& complex) {
+bool ResolutionVisitor::visit(const ComplexSentence& complex) {
 
     if(typeid(ComplexSentence) == typeid(AtomicSentence)){
-        visit_return(complex);
+        return visit(complex);
     }
     else{
-        //What can it be?
-        if(!complex.connective()){
-            complex.accept(*this);
-        }
-        else if(complex.connective() == TokenType::conjunction){
-            _tokenFIFO.push("&");
-        }
-        else if(complex.connective() == TokenType::disjunction){
-            _tokenFIFO.push("|");
-        }
-        else if (complex.connective() == TokenType::implication){
-            _tokenFIFO.push("=>");
-        }
-        else if (complex.connective() == TokenType::negation){
-            _tokenFIFO.push("!");
+        TokenType logic_operator = complex.connective();
+        bool res1 = complex.right()->accept(*this);
+        bool res2;
+
+        //can be no right side symbol in case of negation
+        if(complex.left() != nullptr) {
+            res2 = complex.left()->accept(*this);
         }
 
-        complex.accept(*this);
+        return calculate(logic_operator, res2, res1);
+    }
+}
+
+bool ResolutionVisitor::calculate(TokenType logic_operator, bool res1, bool res2){
+
+    switch (logic_operator){
+        //Must be at the top because if negation then res2 has not been calculated
+        case TokenType ::negation: return !res1;
+        case TokenType ::conjunction: return res1 && res2;
+        case TokenType ::disjunction: return res1 || res2;
+        case TokenType ::implication:
+            // A => B |  Truth table - full and complete truth-table options for brevity
+            if(res1 && res2){
+                return true;
+            }
+            else if(!res1 && !res2){
+                return true;
+            }
+            else if(res1 && !res2){
+                return false;
+            }
+            else if(!res1 && res2){
+                return true;
+            }
+
+        default:
+        std::cerr << "Error with operator calculation " << std::endl;
+            break;
     }
 }
 
@@ -55,85 +75,17 @@ std::vector<std::string> ResolutionVisitor::GetSymbols() {
     return symbols_;
 }
 
-bool ResolutionVisitor::visit_return(const ComplexSentence& complex) {
-    if(typeid(ComplexSentence) == typeid(AtomicSentence)){
-        visit_return(complex);
-    }
-    else{
-        if(complex.connective() == TokenType::conjunction||
-                complex.connective() == TokenType::disjunction ||
-                complex.connective() == TokenType::implication ||
-                complex.connective() == TokenType::negation){
-
-            _tokenFIFO.push(complex.connective());
-            complex.accept(*this);
-        }
-
-
-    }
-
-
-}
-
-bool ResolutionVisitor::visit_return(const AtomicSentence& atom) {
-    return solve(atom.get_token());
-}
-
-bool ResolutionVisitor::visit_return(const Sentence& sentence) {
-    }
-
-void ResolutionVisitor::AddSymbolValues(std::vector<Symbol *> sym) {
-    truthTableSymbolList_ = sym;
-}
-
-bool ResolutionVisitor::calculateStack(std::stack<std::string> stack){
-
-    std::string& sym = stack.top();
-    stack.pop();
-
-
-
-
-    if(sym == "!"){
-        sym = stack.top();
-        stack.pop();
-        while(!isOperator(sym)){
-
-        }
-    }
-    else if (sym == "&"){
-
-    }
-    else if (sym == "=>"){
-
-    }
-    else if (sym == "|"){
-
-    }
-
-}
-
+//Return result value for symbol name
 bool ResolutionVisitor::solve(Token tok) {
-
-    for (auto *sym : truthTableSymbolList_) {
-        if (sym->GetSymbolName() == tok.literal) {
-            return sym->GetValue();
-        }
-    }
-    std::cerr << "Symbol list error" << std::endl;
-
+    return symbol_values_[tok.literal];
 }
 
-bool ResolutionVisitor::GetSolution(const ComplexSentence& complex) {
-    complex.accept(*this);
+bool ResolutionVisitor::GetSolution(std::map<std::string, bool>& modal, const ComplexSentence& complex) {
 
-    calc
+   symbol_values_ = modal;
 
-}
 
-bool isOperator(std::string sym){
-    return ((sym == "!") || (sym == "&")
-            || (sym == "=>") || (sym == "|"));
+    return complex.accept(*this);
 }
 
 }
