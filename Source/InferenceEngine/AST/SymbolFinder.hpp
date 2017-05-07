@@ -1,5 +1,5 @@
 //
-//  ASTVisitor.cpp
+//  SymbolFinder.hpp
 //  iengine
 //
 //  --------------------------------------------------------------
@@ -9,21 +9,24 @@
 //  Copyright (c) 2016 Jacob Milligan. All rights reserved.
 //
 
+#pragma once
+
 #include "InferenceEngine/AST/ASTVisitor.hpp"
-#include "InferenceEngine/AST/Sentence.hpp"
+
+#include <vector>
 
 namespace ie {
 
 
-void ASTVisitor::visit(const Sentence& sentence)
-{
-    sentence.accept(*this);
-}
+class SymbolFinder : public ASTVisitor {
+public:
+    bool visit(const Sentence& sentence) override;
 
-void ASTVisitor::visit(const AtomicSentence& atom)
-{
+    bool visit(const AtomicSentence& atom) override;
 
-}
+private:
+    std::vector<std::string> symbols_;
+};
 
 
 }

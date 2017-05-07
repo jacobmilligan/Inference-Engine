@@ -20,7 +20,7 @@ class ASTVisitor;
 class ASTNode {
 public:
     using Child = std::unique_ptr<ASTNode>;
-    virtual void accept(ASTVisitor& visitor) const = 0;
+    virtual bool accept(ASTVisitor& visitor) const = 0;
 };
 
 

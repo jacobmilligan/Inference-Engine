@@ -21,16 +21,16 @@ class ClauseFinder : public ASTVisitor {
 public:
     /// @brief Visits a sentence - does nothing
     /// @param sentence Sentence to visit
-    void visit(const Sentence& sentence) override;
+    bool visit(const Sentence& sentence) override;
 
     /// @brief Visits an atomic and if it's not already discovered, places it
     /// into the symbol container
     /// @param atom The atomic to visit
-    void visit(const AtomicSentence& atom) override;
+    bool visit(const AtomicSentence& atom) override;
 
     /// @brief Visits a complex sentence and adds it to the rules container
     /// @param complex Complex sentence to visit
-    void visit(const ComplexSentence& complex) override;
+    bool visit(const ComplexSentence& complex) override;
 
     /// @brief Gets the container of rules
     /// @return Rules container

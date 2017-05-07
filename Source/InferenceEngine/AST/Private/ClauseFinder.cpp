@@ -15,11 +15,11 @@
 namespace ie {
 
 
-void ClauseFinder::visit(const Sentence& sentence)
+bool ClauseFinder::visit(const Sentence& sentence)
 {
 }
 
-void ClauseFinder::visit(const AtomicSentence& atom)
+bool ClauseFinder::visit(const AtomicSentence& atom)
 {
     auto contains = std::find(atomics_.begin(), atomics_.end(), atom.get_value());
     if ( contains == atomics_.end() ) {
@@ -27,7 +27,7 @@ void ClauseFinder::visit(const AtomicSentence& atom)
     }
 }
 
-void ClauseFinder::visit(const ComplexSentence& complex)
+bool ClauseFinder::visit(const ComplexSentence& complex)
 {
     rules_.push_back(&complex);
 }

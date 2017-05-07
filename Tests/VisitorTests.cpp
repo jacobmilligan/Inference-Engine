@@ -13,10 +13,10 @@
 
 #include <InferenceEngine/Parsing/Parser.hpp>
 #include <InferenceEngine/AST/ClauseFinder.hpp>
+#include <InferenceEngine/AST/Private/ASTPrinter.hpp>
 
 #define CATCH_CONFIG_MAIN
 #include <catch/catch.hpp>
-#include <InferenceEngine/AST/Private/ASTPrinter.hpp>
 
 TEST_CASE("ClauseFinder separates complex and atoms", "[rules]")
 {

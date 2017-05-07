@@ -15,15 +15,15 @@
 namespace ie {
 
 
-void Sentence::accept(ASTVisitor& visitor) const
+bool Sentence::accept(ASTVisitor& visitor) const
 {
-    visitor.visit(*this);
+    return visitor.visit(*this);
 }
 
 
-void AtomicSentence::accept(ASTVisitor& visitor) const
+bool AtomicSentence::accept(ASTVisitor& visitor) const
 {
-    visitor.visit(*this);
+    return visitor.visit(*this);
 }
 
 AtomicSentence::AtomicSentence(const Token& token)
@@ -39,9 +39,10 @@ Token AtomicSentence::get_token() const {
     return token_;
 }
 
-    void ComplexSentence::accept(ASTVisitor& visitor) const
+
+bool ComplexSentence::accept(ASTVisitor& visitor) const
 {
-    visitor.visit(*this);
+    return visitor.visit(*this);
 }
 
 ComplexSentence::ComplexSentence(ASTNode::Child&& left, const TokenType connective,
