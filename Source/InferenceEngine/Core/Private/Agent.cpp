@@ -14,57 +14,53 @@ namespace ie {
         successfulEntailments_ = 0;
     }
 
-    Response Agent::TTentails(std::vector < Symbol * > &modalA, std::vector < Symbol * > symbolsForRow,
-                              std::vector < Symbol * > &rules, matrix knowledgeBase) {
+    Response Agent::TTentails(std::vector <Symbol*> &modalA, std::vector <Symbol*> symbolsForRow,
+                              std::vector <Symbol*> &rules, matrix knowledgeBase) {
 
         //Gets built upon as the tree depends
-        std::vector < Symbol * > partialModelVal = std::vector<Symbol *>();
+        std::vector <Symbol*> partialModelVal = std::vector<Symbol*>();
 
         //Creates full table rows of symbols + predicates/models
-        std::vector < Symbol * > symbols = symbolsForRow;
+        std::vector <Symbol*> symbols = symbolsForRow;
 
         //Return response with result inside it - includes entailment number that is calculated throughout the algorithm
-        return  Response(EntailMentsNumber(),
+        return Response(EntailMentsNumber(),
                          TTCheckALL(modalA, symbols, partialModelVal, knowledgeBase)
-                );
+        );
     }
 
-    bool Agent::TTCheckALL(std::vector < Symbol * > &modalA, std::vector < Symbol * > symbols,
-                           std::vector < Symbol * > partialModelVal, matrix knowledgeBase) {
+    bool Agent::TTCheckALL(std::vector <Symbol*> &modalA, std::vector <Symbol*> symbols,
+                           std::vector <Symbol*> partialModelVal, matrix knowledgeBase) {
 
         //debugging
         iterations++;
 
-        //No more symbols from the symbol list - we have reach a leaf node of this branch
-        if (symbols.
+            //No more symbols from the symbol list - we have reach a leaf node of this branch
+            if (symbols.empty()) {
 
-                empty()
+                // std::cout << partialModelVal.size() << std::endl;
 
-                ) {
+                //Now we check if the partialModel CAN exist with the rules we have calculated
+                //For example - we are asking for world: partialModel = model U {Q = True}
+                // Q | W | T | W => T |
+                // Does a world where Q is True exist?
+                if (PLtrueWorld(knowledgeBase, partialModelVal)) {
 
-            // std::cout << partialModelVal.size() << std::endl;
-
-            //Now we check if the partialModel CAN exist with the rules we have calculated
-            //For example - we are asking for world: partialModel = model U {Q = True}
-            // Q | W | T | W => T |
-            // Does a world where Q is True exist?
-            //if(PLtrueWorld(knowledgeBase, partialModelVal)) {
-
-            //if it CAN Exist we see if it corresponds to our query modal
-            //For example - we have asked IS 'Q' true in this world i.e. - is modalA = model U {Q = True} in this partialModel?
-            //And in this example the answer is YES, we have reached partialMode (Leaf node of our search tree) where Q is true
-            if (
-                    PLtrue(partialModelVal, modalA)) {
-                //return true;
-            } else {
-                //return false;
-            }
-            //        }
-            //        else{
-            //            //This partialModel does not exist in this world
-            //            //return true;
-            //        }
-        } else {
+                    //if it CAN Exist we see if it corresponds to our query modal
+                    //For example - we have asked IS 'Q' true in this world i.e. - is modalA = model U {Q = True} in this partialModel?
+                    //And in this example the answer is YES, we have reached partialMode (Leaf node of our search tree) where Q is true
+                    if (PLtrue(partialModelVal, modalA)) {
+                        //return true;
+                    } else {
+                        //return false;
+                    }
+                } else
+                    {
+                        //This partialModel does not exist in this world
+                        //return true;
+                    }
+                }
+        else {
             // ------------------------------------------------------------------------- //
             //      Below we begin making our partial models
             //      These only become enumerated at the end of each branch
@@ -103,7 +99,7 @@ namespace ie {
         //return true;
     }
 
-    bool Agent::PLtrue(std::vector < Symbol * > KB, std::vector < Symbol * > modelA) {
+    bool Agent::PLtrue(std::vector <Symbol*> KB, std::vector <Symbol*> modelA) {
 
         //symbols_ are all calculated at this stage - therefore we just check for truth in an entire row/'modal'
         //We are searching through the entire pre-calculated truth table to find a row/'modal' that
@@ -115,6 +111,7 @@ namespace ie {
             //Iterate through each row to check
             bool correctComparisons = false;
             for (auto& sym2 : modelA) {
+
                 if (sym->GetSymbolName() == sym2->GetSymbolName()) {
                     //check to see if the truth table row(mod) is identical to modalA
                     if (sym->GetValue() != sym2->GetValue()) {
@@ -132,10 +129,9 @@ namespace ie {
 
         //No comparisons occured
         return result;
-
     }
 
-    bool Agent::PLtrueWorld(matrix knowledgeBase, std::vector<Symbol *> modelA) {
+    bool Agent::PLtrueWorld(matrix knowledgeBase, std::vector<Symbol*> modelA) {
 
         //symbols_ are all calculated at this stage - therefore we just check for truth in an entire row/'modal'
         //We are searching through the entire pre-calculated truth table to find a row/'modal' that
@@ -177,8 +173,8 @@ namespace ie {
 
     }
 
-    std::vector<Symbol *> Agent::CombineSymbolLists(const std::vector<Symbol *> s1, const std::vector<Symbol *> s2) {
-        std::vector < Symbol * > newSymbolList = s1;
+    std::vector<Symbol*> Agent::CombineSymbolLists(const std::vector<Symbol*> s1, const std::vector<Symbol*> s2) {
+        std::vector <Symbol*> newSymbolList = s1;
 
         for (Symbol *sym : s2) {
             newSymbolList.push_back(sym);
@@ -189,6 +185,34 @@ namespace ie {
 
     int Agent::EntailMentsNumber() {
         return successfulEntailments_;
+    }
+
+    bool Agent::rules_pass(std::vector<Symbol *> modelRow) {
+
+        //there may be no rules
+        bool rulesPass = true;
+
+        //Iterate backwards through modal with each rule in it
+        //Break if any rules are false or if at end of rules
+        std::vector<Symbol*>::reverse_iterator rit = modelRow.rbegin();
+        for(;rit != modelRow.rend(); --rit){
+            //if its a rule we test it - otherwise its the end of the rules and we can break
+            if((*rit)->GetSymbolName().find("rule")){
+                if((*rit)->GetValue()){
+                    rulesPass = true;
+                }
+                else{
+                    return false;
+                }
+            }
+            else {
+                break;
+            }
+        }
+
+
+        return rulesPass;
+
     }
 
 }

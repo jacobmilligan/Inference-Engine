@@ -7,6 +7,7 @@
 
 #include <vector>
 #include <InferenceEngine/AST/ClauseFinder.hpp>
+#include <InferenceEngine/Core/Response.hpp>
 
 #include "InferenceEngine/Core/Symbol.hpp"
 #include "InferenceEngine/TT/TruthTable.hpp"
@@ -17,14 +18,12 @@ using matrix = std::vector <std::vector<Symbol *>>;
 
 class TruthTable {
 private:
-
-    int ruleNumber_ = 0;
     //Will eventually be refactor to not need to be passed all symbols around and just just clauseFinder ref
     std::vector<const ComplexSentence*> rules_;
 
     double size_;
     //symbols_ list following construction of truth table
-    std::vector<Symbol *> symbolList_;
+    std::vector<Symbol*> symbolList_;
 
     //Truth table matrix itself - containing models(rows) of symbols
     matrix matrixModals_;
@@ -34,9 +33,8 @@ private:
 
     std::map<std::string, bool> ConvertToMap(std::vector<Symbol*> symbolList);
 
-    const ComplexSentence* PopRule();
 
-    bool is_rules();
+    bool modalMatch(const std::vector<Symbol*> row, const std::vector<Symbol*> askModal);
 
 public:
 
@@ -50,6 +48,7 @@ public:
     //Return copy of symbols used in truth table
     std::vector<Symbol *> GetSymbolsList();
 
+    Response Ask(const std::vector<Symbol*> symbolList);
 
 
 };

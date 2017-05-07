@@ -16,7 +16,7 @@ int main(int argc, char** argv)
 {
 
     auto path = sky::Path(sky::Path::bin_path(argv));
-    path.append("../Tests/test2.txt");
+    path.append("../Tests/test5.txt");
 
     ie::Parser parser;
     auto contents = parser.preprocess(path);
@@ -70,6 +70,8 @@ void RunTT(const ie::ClauseFinder& c, const ie::SymbolFinder& symFind){
     for(auto& a : observations){
         std::cout << a->GetSymbolName() << " - " << a->GetValue() << std::endl;
     }
+    std::cout << std::endl;
+
 
     ie::ASTPrinter printer;
 
@@ -80,20 +82,26 @@ void RunTT(const ie::ClauseFinder& c, const ie::SymbolFinder& symFind){
     }
 
     std::cout << std::endl;
-    std::cout << "Size of tree: " << pow(2, observations.size() + c.rules().size()) << std::endl;
+    std::cout << "Size of tree: " << pow(2, observations.size()) << std::endl;
 
     ie::TruthTable tt = ie::TruthTable(observations, c.rules());
 
 
-    ie::Agent agent = ie::Agent();
+    //ie::Agent agent = ie::Agent();
 
     std::vector<ie::Symbol*> ask = std::vector<ie::Symbol*>();
-    ask.push_back(new ie::Symbol("f", true));
+    ask.push_back(new ie::Symbol("p", false));
+    ask.push_back(new ie::Symbol("z", true));
     std:: cout << "Asking for: " << std::endl;
     for(auto& a : ask){
         std::cout << a->GetSymbolName() << " - " << a->GetValue() << std::endl;
     }
     std::cout << std::endl;
+
+
+    Response res = tt.Ask(ask);
+
+
     //No rules at the moment
     std::vector<ie::Symbol*> emptyRules = std::vector<ie::Symbol*>();
 
@@ -103,7 +111,7 @@ void RunTT(const ie::ClauseFinder& c, const ie::SymbolFinder& symFind){
 
 
     clock_t t;    t = clock();
-    Response res = agent.TTentails(ask, observations, emptyRules, tt.GetTruthTableMatrix());
+    //Response res = agent.TTentails(ask, observations, emptyRules, tt.GetTruthTableMatrix());
     t = clock() - t;
     printf ("It took %lu clicks (%f seconds).\n",t,((float)t)/CLOCKS_PER_SEC);
 
