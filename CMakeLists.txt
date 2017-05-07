@@ -17,7 +17,7 @@ get_property(SRC GLOBAL PROPERTY SOURCE_LIST)
 
 add_executable(${PROJECT_NAME}
         ${PROJECT_SOURCE_DIR}/Source/InferenceEngine/Main.cpp
-        "${SRC}")
+        "${SRC}" Source/InferenceEngine/AST/Private/Resolver.cpp Source/InferenceEngine/AST/Resolver.hpp)
 
 target_link_libraries(${PROJECT_NAME} skyrocket_path)
 

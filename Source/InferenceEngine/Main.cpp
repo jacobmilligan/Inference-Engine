@@ -4,7 +4,8 @@
 //For testing atm (cc)
 #include <iostream>
 #include <cmath>
-#include <InferenceEngine/AST/SymbolFinder.hpp>
+#include <InferenceEngine/AST/ResolutionVisitor.hpp>
+#include <InferenceEngine/AST/ClauseFinder.hpp>
 #include "InferenceEngine/Core/Agent.hpp"
 #include "InferenceEngine/AST/Private/ASTPrinter.hpp"
 
@@ -12,14 +13,17 @@ void RunTT(std::vector<std::string> strVec);
 
 int main(int argc, char** argv)
 {
+    std::cout << "Comparison" << ( typeid(ie::ASTPrinter) == typeid(ie::ASTPrinter) );
+
     auto path = sky::Path(sky::Path::bin_path(argv));
-    path.append("../Tests/test1.txt");
+    path.append("../Tests/test3.txt");
 
     ie::Parser parser;
     auto contents = parser.preprocess(path);
     parser.parse(contents.tell);
 
-    ie::SymbolFinder s;
+    ie::ClauseFinder s;
+    ie::ASTPrinter p;
 
     for(auto& a: parser.ast()){
         a->accept(s);
@@ -27,11 +31,14 @@ int main(int argc, char** argv)
 
 
     std::vector<std::string> strVec;
-    for(auto a : s.GetSymbols()) {
-        strVec.push_back(a);
+    for(auto a : s.rules() ) {
+        a->accept(p);
     }
+//            std::cout << a;
+//            strVec.push_back(a);
 
-    RunTT(strVec);
+
+    //RunTT(strVec);
 
     return 0;
 }
@@ -65,7 +72,6 @@ void RunTT(std::vector<std::string> strVec){
 //    observations.push_back(s);
 
     std::cout << "Size of tree: " << pow(2, observations.size()) << std::endl;
-
 
     ie::TruthTable tt = ie::TruthTable(observations);
 

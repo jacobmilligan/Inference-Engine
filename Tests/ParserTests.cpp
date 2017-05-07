@@ -19,7 +19,7 @@
 #include <InferenceEngine/AST/Private/ASTPrinter.hpp>
 
 #include <Path/Path.hpp>
-#include <InferenceEngine/AST/SymbolFinder.hpp>
+#include <InferenceEngine/AST/ResolutionVisitor.hpp>
 
 class ParserTestFixture {
 public:
@@ -338,7 +338,7 @@ TEST_CASE_METHOD(ParserTestFixture, "Test crazy negations", "[parser]")
     }
 }
 
-TEST_CASE_METHOD(ParserTestFixture, "SymbolFinder gets all symbols test1.txt", "[ASTvisitor]")
+TEST_CASE_METHOD(ParserTestFixture, "ResolutionVisitor gets all symbols test1.txt", "[ASTvisitor]")
 {
     auto file = root_.get_relative("test1.txt");
     ie::Parser parser;
@@ -346,7 +346,7 @@ TEST_CASE_METHOD(ParserTestFixture, "SymbolFinder gets all symbols test1.txt", "
     auto contents = parser.preprocess(file);
     parser.parse(contents.tell);
 
-    ie::SymbolFinder s;
+    ie::ResolutionVisitor s;
 
     for(auto& a: parser.ast()){
         a->accept(s);
@@ -361,7 +361,7 @@ TEST_CASE_METHOD(ParserTestFixture, "SymbolFinder gets all symbols test1.txt", "
     REQUIRE(outputString == "p3 p2 p1 p3 e c e b f g f h d p1 p3 p1 c a b p2 d ");
 }
 
-TEST_CASE_METHOD(ParserTestFixture, "SymbolFinder gets all symbols test2.txt", "[ASTvisitor]")
+TEST_CASE_METHOD(ParserTestFixture, "ResolutionVisitor gets all symbols test2.txt", "[ASTvisitor]")
 {
     auto file = root_.get_relative("test2.txt");
     ie::Parser parser;
@@ -369,7 +369,7 @@ TEST_CASE_METHOD(ParserTestFixture, "SymbolFinder gets all symbols test2.txt", "
     auto contents = parser.preprocess(file);
     parser.parse(contents.tell);
 
-    ie::SymbolFinder s;
+    ie::ResolutionVisitor s;
 
     for(auto& a: parser.ast()){
         a->accept(s);
@@ -384,7 +384,7 @@ TEST_CASE_METHOD(ParserTestFixture, "SymbolFinder gets all symbols test2.txt", "
     REQUIRE(outputString == "d p2 e e p4 p d ");
 }
 
-TEST_CASE_METHOD(ParserTestFixture, "SymbolFinder gets all symbols test3.txt", "[ASTvisitor]")
+TEST_CASE_METHOD(ParserTestFixture, "ResolutionVisitor gets all symbols test3.txt", "[ASTvisitor]")
 {
     auto file = root_.get_relative("test3.txt");
     ie::Parser parser;
@@ -392,7 +392,7 @@ TEST_CASE_METHOD(ParserTestFixture, "SymbolFinder gets all symbols test3.txt", "
     auto contents = parser.preprocess(file);
     parser.parse(contents.tell);
 
-    ie::SymbolFinder s;
+    ie::ResolutionVisitor s;
 
     for(auto& a: parser.ast()){
         a->accept(s);
@@ -407,7 +407,7 @@ TEST_CASE_METHOD(ParserTestFixture, "SymbolFinder gets all symbols test3.txt", "
     REQUIRE(outputString == "d p2 e e p4 p d ");
 }
 
-TEST_CASE_METHOD(ParserTestFixture, "SymbolFinder gets all symbols test4.txt", "[ASTvisitor]")
+TEST_CASE_METHOD(ParserTestFixture, "ResolutionVisitor gets all symbols test4.txt", "[ASTvisitor]")
 {
     auto file = root_.get_relative("test4.txt");
     ie::Parser parser;
@@ -415,7 +415,7 @@ TEST_CASE_METHOD(ParserTestFixture, "SymbolFinder gets all symbols test4.txt", "
     auto contents = parser.preprocess(file);
     parser.parse(contents.tell);
 
-    ie::SymbolFinder s;
+    ie::ResolutionVisitor s;
 
     for(auto& a: parser.ast()){
         a->accept(s);
