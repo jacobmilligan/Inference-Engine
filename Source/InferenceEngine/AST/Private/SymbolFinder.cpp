@@ -21,8 +21,26 @@ bool SymbolFinder::visit(const Sentence& sentence)
 
 bool SymbolFinder::visit(const AtomicSentence& atom)
 {
-    symbols_.push_back(atom.get_value());
+    auto contains = std::find(symbols_.begin(), symbols_.end(), atom.get_value());
+    if ( contains == symbols_.end() ) {
+        symbols_.push_back(atom.get_value());
+    }
+
     return true;
 }
+
+bool SymbolFinder::visit(const ComplexSentence& complex) {
+    if ( complex.left() != nullptr ) {
+        complex.left()->accept(*this);
+    }
+    complex.right()->accept(*this);
+    return false;
+}
+
+
+std::vector<std::string> SymbolFinder::get_symbols() const {
+    return symbols_;
+}
+
 
 }

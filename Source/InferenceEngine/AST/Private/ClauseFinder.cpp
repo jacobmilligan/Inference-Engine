@@ -9,6 +9,7 @@
 //  Copyright (c) 2016 Jacob Milligan. All rights reserved.
 //
 
+#include <iostream>
 #include "InferenceEngine/AST/ClauseFinder.hpp"
 
 namespace ie {

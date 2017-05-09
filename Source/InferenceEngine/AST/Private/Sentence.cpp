@@ -35,6 +35,10 @@ std::string AtomicSentence::get_value() const
     return token_.literal;
 }
 
+Token AtomicSentence::get_token() const {
+    return token_;
+}
+
 
 bool ComplexSentence::accept(ASTVisitor& visitor) const
 {

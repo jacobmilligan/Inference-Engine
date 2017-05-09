@@ -39,6 +39,9 @@ namespace ie {
         //Get number of successful entailments following a TT entialment
         int EntailMentsNumber();
 
+
+        bool rules_pass(std::vector<Symbol*> modelRow);
+
     public:
 
         Agent();

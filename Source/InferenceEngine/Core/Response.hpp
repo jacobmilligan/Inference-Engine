@@ -12,8 +12,8 @@
 class Response {
 public:
     bool Result = false;
-    int ModalsInfered = 0;
-    Response(int mods, bool res) : ModalsInfered(mods), Result(res) {};
+    double ModalsInfered = 0;
+    Response(double mods, bool res) : ModalsInfered(mods), Result(res) {};
 };
 
 

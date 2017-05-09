@@ -6,39 +6,51 @@
 #define PROJECT_TRUTHTABLE_HPP
 
 #include <vector>
+#include <InferenceEngine/AST/ClauseFinder.hpp>
+#include <InferenceEngine/Core/Response.hpp>
 
 #include "InferenceEngine/Core/Symbol.hpp"
 #include "InferenceEngine/TT/TruthTable.hpp"
 
 namespace ie {
 
-    using matrix = std::vector <std::vector<Symbol *>>;
+using matrix = std::vector <std::vector<Symbol *>>;
 
-    class TruthTable {
-    private:
+class TruthTable {
+private:
+    //Will eventually be refactor to not need to be passed all symbols around and just just clauseFinder ref
+    std::vector<const ComplexSentence*> rules_;
 
-        double size_;
-        //symbols_ list following construction of truth table
-        std::vector<Symbol *> symbolList_;
+    double size_;
+    //symbols_ list following construction of truth table
+    std::vector<Symbol*> symbolList_;
 
-        //Truth table matrix itself - containing models(rows) of symbols
-        matrix matrixModals_;
+    //Truth table matrix itself - containing models(rows) of symbols
+    matrix matrixModals_;
 
-        void ConstructTruthTableRecursive(std::vector<Symbol *> symbols,
-                                          matrix& tempMatrix, std::vector<Symbol *> partialModelVal, double modalSize);
+    void ConstructTruthTableRecursive(std::vector<Symbol *> symbols,
+                                      matrix& tempMatrix, std::vector<Symbol *> partialModelVal, double modalSize);
 
-    public:
+    std::map<std::string, bool> ConvertToMap(std::vector<Symbol*> symbolList);
 
-        //Constructor to truth table:
-        //Truth table is calculated within the constructor
-        TruthTable(std::vector<Symbol *>& symbols);
 
-        //Return copy of truth table
-        matrix GetTruthTableMatrix();
+    bool modalMatch(const std::vector<Symbol*> row, const std::vector<Symbol*> askModal);
 
-        //Return copy of symbols used in truth table
-        std::vector<Symbol *> GetSymbolsList();
+public:
 
-    };
+    //Constructor to truth table:
+    //Truth table is calculated within the constructor
+    TruthTable(std::vector<Symbol *>& symbols, std::vector<const ComplexSentence*> kb_rules);
+
+    //Return copy of truth table
+    matrix GetTruthTableMatrix();
+
+    //Return copy of symbols used in truth table
+    std::vector<Symbol *> GetSymbolsList();
+
+    Response Ask(const std::vector<Symbol*> symbolList);
+
+
+};
 }
 #endif //PROJECT_TRUTHTABLE_HPP

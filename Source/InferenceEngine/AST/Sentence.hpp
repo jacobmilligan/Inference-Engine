@@ -29,6 +29,7 @@ public:
     bool accept(ASTVisitor& visitor) const override;
 
     std::string get_value() const;
+    Token get_token() const;
 private:
     Token token_;
 };
