@@ -16,6 +16,7 @@
 #include <vector>
 #include <InferenceEngine/Core/Symbol.hpp>
 #include <queue>
+#include <map>
 
 namespace ie {
 
@@ -29,12 +30,12 @@ public:
 
     bool visit(const ComplexSentence& complex) override;
 
-    std::vector<std::string> GetSymbols();
+    std::vector<std::string>& GetSymbols();
 
     bool calculate(TokenType logic_operator, bool res1, bool res2);
 
     //Public call to return overall results
-    bool GetSolution(std::map<std::string, bool>& modal, const ComplexSentence& complex);
+    bool GetSolution(std::map<std::string, bool>& model, const ComplexSentence& complex);
 
 private:
 

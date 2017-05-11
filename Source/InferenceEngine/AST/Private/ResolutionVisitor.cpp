@@ -71,7 +71,7 @@ bool ResolutionVisitor::calculate(TokenType logic_operator, bool res1, bool res2
     }
 }
 
-std::vector<std::string> ResolutionVisitor::GetSymbols() {
+std::vector<std::string>& ResolutionVisitor::GetSymbols() {
     return symbols_;
 }
 
@@ -80,9 +80,9 @@ bool ResolutionVisitor::solve(Token tok) {
     return symbol_values_[tok.literal];
 }
 
-bool ResolutionVisitor::GetSolution(std::map<std::string, bool>& modal, const ComplexSentence& complex) {
+bool ResolutionVisitor::GetSolution(std::map<std::string, bool>& model, const ComplexSentence& complex) {
 
-   symbol_values_ = modal;
+   symbol_values_ = model;
 
 
     return complex.accept(*this);
