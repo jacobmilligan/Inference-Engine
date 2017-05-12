@@ -53,8 +53,12 @@ void Parser::parse(const std::string& str)
     for (auto iter = lexer.tokbegin(); iter != lexer.tokend(); ++iter) {
         if ( iter->type == TokenType::eof )
             break;
-
-        ast_.push_back(parse_sentence(iter, 0));
+        auto node = parse_sentence(iter, 0);
+        auto as_atomic = dynamic_cast<AtomicSentence*>(node.get());
+        if ( as_atomic != nullptr ) {
+            as_atomic->is_root = true;
+        }
+        ast_.push_back(std::move(node));
     }
 }
 

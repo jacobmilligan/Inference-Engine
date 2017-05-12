@@ -26,6 +26,8 @@ bool ClauseFinder::visit(const AtomicSentence& atom)
     auto contains = std::find(atomics_.begin(), atomics_.end(), atom.get_value());
     if ( contains == atomics_.end() ) {
         atomics_.push_back(atom.get_value());
+        if ( atom.is_root )
+            rules_.push_back(&atom);
     }
     return true;
 }
@@ -36,7 +38,7 @@ bool ClauseFinder::visit(const ComplexSentence& complex)
     return true;
 }
 
-const std::vector<const ComplexSentence*>& ClauseFinder::rules() const
+const std::vector<const Sentence*>& ClauseFinder::rules() const
 {
     return rules_;
 }

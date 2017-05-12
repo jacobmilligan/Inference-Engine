@@ -25,6 +25,8 @@ public:
 
 class AtomicSentence : public Sentence {
 public:
+    bool is_root;
+
     AtomicSentence(const Token& token);
     bool accept(ASTVisitor& visitor) const override;
 
