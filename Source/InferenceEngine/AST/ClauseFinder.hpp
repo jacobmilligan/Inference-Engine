@@ -34,13 +34,13 @@ public:
 
     /// @brief Gets the container of rules
     /// @return Rules container
-    const std::vector<const ComplexSentence*>& rules() const;
+    const std::vector<const Sentence*>& rules() const;
 
     /// @brief Gets all symbols found by the clause finder
     /// @return The symbols container
     const std::vector<std::string>& symbols() const;
 private:
-    std::vector<const ComplexSentence*> rules_;
+    std::vector<const Sentence*> rules_;
     std::vector<std::string> atomics_;
 };
 

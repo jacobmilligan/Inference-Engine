@@ -27,7 +27,7 @@ bool AtomicSentence::accept(ASTVisitor& visitor) const
 }
 
 AtomicSentence::AtomicSentence(const Token& token)
-    : token_(token)
+    : token_(token), is_root(false)
 {}
 
 std::string AtomicSentence::get_value() const

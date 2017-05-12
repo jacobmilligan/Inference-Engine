@@ -37,8 +37,11 @@ TEST_CASE("ClauseFinder separates complex and atoms", "[rules]")
     {
         std::vector<std::string> expected = {
             "(p=>q)",
+            "p",
+            "q",
             "((p&q)=>(!b))",
-            "(((!b)&(!q))=>((p|q)&q))"
+            "b",
+            "(((!b)&(!q))=>((p|q)&q))",
         };
 
         int index = 0;
