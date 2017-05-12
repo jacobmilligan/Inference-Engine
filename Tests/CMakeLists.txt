@@ -27,3 +27,20 @@ target_link_libraries(${TRUTHTABLE_TESTS_NAME} InferenceLib)
 target_link_libraries(${TRUTHTABLE_TESTS_NAME} skyrocket_path)
 target_include_directories(${TRUTHTABLE_TESTS_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/Deps)
 target_include_directories(${TRUTHTABLE_TESTS_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/Source)
+
+# FC Tests config
+set(FC_TESTS_NAME fc_tests)
+add_executable(${FC_TESTS_NAME} FCTests.cpp)
+target_link_libraries(${FC_TESTS_NAME} InferenceLib)
+target_link_libraries(${FC_TESTS_NAME} skyrocket_path)
+target_include_directories(${FC_TESTS_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/Deps)
+target_include_directories(${FC_TESTS_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/Source)
+
+# KB Tests config
+set(KB_TESTS_NAME kb_tests)
+add_executable(${KB_TESTS_NAME} KBTests.cpp)
+target_link_libraries(${KB_TESTS_NAME} InferenceLib)
+target_link_libraries(${KB_TESTS_NAME} skyrocket_path)
+target_include_directories(${KB_TESTS_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/Deps)
+target_include_directories(${KB_TESTS_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/Source)
+

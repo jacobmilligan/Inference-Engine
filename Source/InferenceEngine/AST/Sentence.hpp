@@ -19,14 +19,17 @@ class ASTVisitor;
 
 class Sentence : public ASTNode {
 public:
-    Sentence() {}
+    bool is_root;
+
+    Sentence()
+        : is_root(false)
+    {}
+
     bool accept(ASTVisitor& visitor) const override;
 };
 
 class AtomicSentence : public Sentence {
 public:
-    bool is_root;
-
     AtomicSentence(const Token& token);
     bool accept(ASTVisitor& visitor) const override;
 

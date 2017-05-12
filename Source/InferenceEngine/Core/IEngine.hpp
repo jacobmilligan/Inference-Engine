@@ -11,6 +11,17 @@
 
 #pragma once
 
+#include "Agent.hpp"
+
+namespace ie {
+
+
 class IEngine {
+public:
+
+private:
 
 };
+
+
+}
