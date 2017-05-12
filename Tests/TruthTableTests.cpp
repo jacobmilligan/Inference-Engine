@@ -29,9 +29,8 @@ TEST_CASE("calc test negation", "[operators]")
     CoutUtils cout_utils;
     ie::ASTPrinter printer;
 
-    std::string rules = "!p=>q; w=>q";
 
-
+    std::string rules = "!p";
 
     ie::Parser parser;
     parser.parse(rules);
@@ -49,21 +48,59 @@ TEST_CASE("calc test negation", "[operators]")
     }
 
 
-    //Just all the possible symbols from world i.e. "P" "G" "W" "WT" "P1"
     std::vector<ie::Symbol*> observations = std::vector<ie::Symbol*>();
     ie::TruthTable tt = ie::TruthTable(symFind, clause.rules());
 
 
     std::vector<ie::Symbol*> _asks;
 
+    ///Asking if p exists when !p already knowledge
+    std::vector<ie::Symbol*> ask = std::vector<ie::Symbol*>();
+    ask.push_back(new ie::Symbol("p", false));
+//    ask.push_back(new ie::Symbol("z", true));
+
+    Response res = tt.ask(ask);
+
+    REQUIRE(!res.Result);
+}
+
+TEST_CASE("calc test dysjunction", "[operators]")
+{
+
+    CoutUtils cout_utils;
+    ie::ASTPrinter printer;
+
+
+    std::string rules = "p | q; !p; q";
+
+    ie::Parser parser;
+    parser.parse(rules);
+
+    ie::ClauseFinder clause;
+    ie::SymbolFinder symFind;
+
+    for(auto& a: parser.ast()){
+        a->accept(symFind);
+        a->accept(clause);
+    }
+
+    for ( auto& c : clause.rules() ) {
+        c->accept(printer);
+    }
+
+
+    std::vector<ie::Symbol*> observations = std::vector<ie::Symbol*>();
+    ie::TruthTable tt = ie::TruthTable(symFind, clause.rules());
+
+
+    std::vector<ie::Symbol*> _asks;
+
+    ///Asking if p exists when !p already knowledge
     std::vector<ie::Symbol*> ask = std::vector<ie::Symbol*>();
     ask.push_back(new ie::Symbol("q", false));
 //    ask.push_back(new ie::Symbol("z", true));
 
     Response res = tt.ask(ask);
 
-    REQUIRE(res.Result);
-
-
-
+    REQUIRE(!res.Result);
 }
