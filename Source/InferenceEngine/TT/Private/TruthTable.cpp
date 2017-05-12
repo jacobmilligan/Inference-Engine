@@ -6,6 +6,8 @@
 #include <InferenceEngine/AST/ResolutionVisitor.hpp>
 #include <InferenceEngine/AST/SymbolFinder.hpp>
 #include "InferenceEngine/TT/TruthTable.hpp"
+#include <algorithm>
+
 
 namespace ie {
     //Trial recursive algo for TT
@@ -77,7 +79,7 @@ std::vector<Symbol*> TruthTable::GetSymbolsList() {
     return symbolList_;
 }
 
-TruthTable::TruthTable(const ie::SymbolFinder& symFind, std::vector<const ComplexSentence*> kb_rules) {
+TruthTable::TruthTable(const ie::SymbolFinder& symFind, std::vector<const Sentence*> kb_rules) {
 
     std::vector<ie::Symbol*> observations = std::vector<ie::Symbol*>();
 
@@ -159,14 +161,18 @@ bool TruthTable::modal_match(const std::vector<Symbol *> row, const std::vector<
 }
 
 bool TruthTable::ask_symbols_match(const std::vector<Symbol *> model){
+
+    double count = model.size();
+
     for(auto* a : model){
-        for(auto* b : symbolList_){
-            if(a->GetSymbolName() != b->GetSymbolName()){
-                return false;
+        //if not in list return false
+        for(auto* sym : symbolList_){
+            if(sym->GetSymbolName() == a->GetSymbolName()){
+                count--;
             }
         }
     }
-    return true;
+    return count == 0;
 }
 
 }

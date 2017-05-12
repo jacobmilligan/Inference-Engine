@@ -47,7 +47,7 @@ bool ResolutionVisitor::calculate(TokenType logic_operator, bool lVal, bool rVal
 
     switch (logic_operator){
         //Must be at the top because if negation then rVal has not been calculated
-        case TokenType ::negation: return !lVal;
+        case TokenType ::negation: return !rVal;
         case TokenType ::conjunction: return lVal && rVal;
         case TokenType ::disjunction: return lVal || rVal;
         case TokenType ::implication:
@@ -81,7 +81,7 @@ bool ResolutionVisitor::solve(Token tok) {
 }
 
 
-bool ResolutionVisitor::get_solution(std::map<std::string, bool>& modal, const ComplexSentence& complex) {
+bool ResolutionVisitor::get_solution(std::map<std::string, bool>& modal, const Sentence& complex) {
     symbol_values_ = modal;
     return complex.accept(*this);
 }

@@ -37,7 +37,7 @@ public:
     bool calculate(TokenType logic_operator, bool lVal, bool rVal);
 
     //Public call to return overall results
-    bool get_solution(std::map<std::string, bool>& modal, const ComplexSentence& complex);
+    bool get_solution(std::map<std::string, bool>& modal, const Sentence& complex);
 private:
 
     std::map<std::string, bool> symbol_values_;

@@ -19,7 +19,7 @@ using matrix = std::vector <std::vector<Symbol *>>;
 class TruthTable {
 private:
 
-    std::vector<const ComplexSentence*> rules_;
+    std::vector<const Sentence*> rules_;
 
     //symbols_ list following construction of truth table
     std::vector<Symbol*> symbolList_;
@@ -43,7 +43,7 @@ public:
 
     //Constructor to truth table:
     //Truth table is calculated within the constructor
-    TruthTable(const ie::SymbolFinder& symFind, std::vector<const ComplexSentence*> kb_rules);
+    TruthTable(const ie::SymbolFinder& symFind, std::vector<const Sentence*> kb_rules);
 
     //Return copy of truth table
     matrix GetTruthTableMatrix();
