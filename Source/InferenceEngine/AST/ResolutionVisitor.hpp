@@ -16,6 +16,7 @@
 #include <vector>
 #include <InferenceEngine/Core/Symbol.hpp>
 #include <queue>
+#include <map>
 
 namespace ie {
 
@@ -37,7 +38,6 @@ public:
 
     //Public call to return overall results
     bool get_solution(std::map<std::string, bool>& modal, const ComplexSentence& complex);
-
 private:
 
     std::map<std::string, bool> symbol_values_;

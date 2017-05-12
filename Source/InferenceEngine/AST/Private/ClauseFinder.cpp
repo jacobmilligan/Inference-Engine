@@ -9,14 +9,16 @@
 //  Copyright (c) 2016 Jacob Milligan. All rights reserved.
 //
 
-#include <iostream>
 #include "InferenceEngine/AST/ClauseFinder.hpp"
+
+#include <iostream>
 
 namespace ie {
 
 
 bool ClauseFinder::visit(const Sentence& sentence)
 {
+    return true;
 }
 
 bool ClauseFinder::visit(const AtomicSentence& atom)
@@ -25,11 +27,13 @@ bool ClauseFinder::visit(const AtomicSentence& atom)
     if ( contains == atomics_.end() ) {
         atomics_.push_back(atom.get_value());
     }
+    return true;
 }
 
 bool ClauseFinder::visit(const ComplexSentence& complex)
 {
     rules_.push_back(&complex);
+    return true;
 }
 
 const std::vector<const ComplexSentence*>& ClauseFinder::rules() const

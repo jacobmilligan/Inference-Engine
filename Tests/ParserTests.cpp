@@ -316,10 +316,13 @@ TEST_CASE_METHOD(ParserTestFixture, "Test crazy negations", "[parser]")
         "(((!b)&e)=>f)",
         "((f&(!g))=>h)",
         "(p1=>d)",
-        "((p1&p3)=>p10)",
+        "((p1&(!p3))=>p10)",
         "(!a)",
         "b",
-        "p2"
+        "(!p2)",
+        "p15",
+        "p",
+        "pp"
     };
 
     unsigned long s = 0;

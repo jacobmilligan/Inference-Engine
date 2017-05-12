@@ -80,8 +80,8 @@ bool ResolutionVisitor::solve(Token tok) {
     return symbol_values_[tok.literal];
 }
 
-bool ResolutionVisitor::get_solution(std::map<std::string, bool>& modal, const ComplexSentence& complex) {
 
+bool ResolutionVisitor::get_solution(std::map<std::string, bool>& modal, const ComplexSentence& complex) {
     symbol_values_ = modal;
     return complex.accept(*this);
 }
