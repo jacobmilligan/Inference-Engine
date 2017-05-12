@@ -32,6 +32,8 @@ int main(int argc, char** argv)
 TEST_CASE("Forward chaining works on given test data", "[fc]")
 {
     ie::Parser parser;
+    std::vector<std::string> expected = { "b", "p2", "a", "p3", "p1", "c", "d" };
+
     auto path = root.get_relative("test1.txt");
     auto pre = ie::Parser::preprocess(path);
     parser.parse(pre.tell);
@@ -41,9 +43,53 @@ TEST_CASE("Forward chaining works on given test data", "[fc]")
 
     ie::FC fc;
     auto sym = ie::Symbol("d", true);
-    fc.fc_entails(kb, sym);
+    auto result = fc.fc_entails(kb, sym);
 
-    std::vector<std::string> expected = { "b", "a", "p2", "p3", "p1", "d" };
+    REQUIRE(result == true);
+
+    for ( int i = 0; i < fc.path().size(); ++i ) {
+        INFO("Index: " << i);
+        REQUIRE(fc.path()[i] == expected[i]);
+    }
+}
+
+TEST_CASE("Forward chaining works on other data", "[fc]")
+{
+    ie::Parser parser;
+    std::vector<std::string> expected = { "b", "a", "p1", "c", "p3", "d" };
+
+    parser.parse("p1=> p3; a; b; a=>p1; p1&a=>c; c=>d");
+
+    ie::KnowledgeBase kb;
+    kb.tell(parser.ast());
+
+    ie::FC fc;
+    auto sym = ie::Symbol("d", true);
+    auto result = fc.fc_entails(kb, sym);
+
+    REQUIRE(result == true);
+
+    for ( int i = 0; i < fc.path().size(); ++i ) {
+        INFO("Index: " << i);
+        REQUIRE(fc.path()[i] == expected[i]);
+    }
+}
+
+TEST_CASE("Forward chaining returns false", "[fc]")
+{
+    ie::Parser parser;
+    std::vector<std::string> expected = { "b", "a", "p1", "c", "p3", "d" };
+
+    parser.parse("p1=> p3; a; b; a=>p1; p1&a=>c; c=>d");
+
+    ie::KnowledgeBase kb;
+    kb.tell(parser.ast());
+
+    ie::FC fc;
+    auto sym = ie::Symbol("x", true);
+    auto result = fc.fc_entails(kb, sym);
+
+    REQUIRE(!result);
 
     for ( int i = 0; i < fc.path().size(); ++i ) {
         INFO("Index: " << i);
