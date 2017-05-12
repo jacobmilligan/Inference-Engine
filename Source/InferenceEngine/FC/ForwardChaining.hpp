@@ -25,14 +25,17 @@ class FC {
 public:
     bool fc_entails(KnowledgeBase& kb, Symbol& q)
     {
-        std::unordered_map<std::string, int> count;
+        std::unordered_map<std::string, unsigned long> count;
         std::unordered_map<std::string, bool> inferred;
+
         for ( auto& b : kb.symbols() ) {
             inferred[b.first] = false;
         }
 
         for ( auto& c : kb.clauses() ) {
-//            inferred[c.] = false;
+            ClauseFinder finder;
+            c.second->accept(finder);
+            count[c.first] = finder.symbols().size();
         }
 
         std::queue<Symbol> agenda;
