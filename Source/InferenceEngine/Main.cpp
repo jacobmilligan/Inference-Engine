@@ -37,12 +37,7 @@ int main(int argc, char** argv)
         std::cout << str << " " << std::endl;
     }
 
-
-//s
-//            std::cout << a;
-//            strVec.push_back(a);
-
-    RunTT(clause, sFind);
+    //RunTT(clause, sFind);
 
     return 0;
 }
@@ -84,7 +79,7 @@ void RunTT(const ie::ClauseFinder& c, const ie::SymbolFinder& symFind){
     std::cout << std::endl;
     std::cout << "Size of tree: " << pow(2, observations.size()) << std::endl;
 
-    ie::TruthTable tt = ie::TruthTable(observations, c.rules());
+    //ie::TruthTable tt = ie::TruthTable(observations, c.rules());
 
 
     //ie::Agent agent = ie::Agent();
@@ -99,7 +94,7 @@ void RunTT(const ie::ClauseFinder& c, const ie::SymbolFinder& symFind){
     std::cout << std::endl;
 
 
-    Response res = tt.Ask(ask);
+    //Response res = tt.ask(ask);
 
 
     //No rules at the moment
@@ -115,6 +110,6 @@ void RunTT(const ie::ClauseFinder& c, const ie::SymbolFinder& symFind){
     t = clock() - t;
     printf ("It took %lu clicks (%f seconds).\n",t,((float)t)/CLOCKS_PER_SEC);
 
-    std::cout << "Infered? " << (res.Result ? "true" : "false") << " , " << "Models infered: " << res.ModalsInfered << std::endl;
+   // std::cout << "Infered? " << (res.Result ? "true" : "false") << " , " << "Models infered: " << res.ModalsInfered << std::endl;
 
 }

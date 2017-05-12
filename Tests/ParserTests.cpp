@@ -354,7 +354,7 @@ TEST_CASE_METHOD(ParserTestFixture, "ResolutionVisitor gets all symbols test1.tx
 
     std::string outputString;
 
-    for(auto a : s.GetSymbols()) {
+    for(auto a : s.get_symbols()) {
         outputString += a + " ";
     }
 
@@ -377,7 +377,7 @@ TEST_CASE_METHOD(ParserTestFixture, "ResolutionVisitor gets all symbols test2.tx
 
     std::string outputString;
 
-    for(auto a : s.GetSymbols()) {
+    for(auto a : s.get_symbols()) {
         outputString += a + " ";
     }
 
@@ -400,14 +400,14 @@ TEST_CASE_METHOD(ParserTestFixture, "ResolutionVisitor gets all symbols test3.tx
 
     std::string outputString;
 
-    for(auto a : s.GetSymbols()) {
+    for(auto a : s.get_symbols()) {
         outputString += a + " ";
     }
 
     REQUIRE(outputString == "d p2 e e p4 p d ");
 }
 
-TEST_CASE_METHOD(ParserTestFixture, "ResolutionVisitor gets all symbols test4.txt", "[ASTvisitor]")
+TEST_CASE_METHOD(ParserTestFixture, "ResolutionVisitor gets all symbols test4.txt", "[calculation]")
 {
     auto file = root_.get_relative("test4.txt");
     ie::Parser parser;
@@ -423,7 +423,7 @@ TEST_CASE_METHOD(ParserTestFixture, "ResolutionVisitor gets all symbols test4.tx
 
     std::string outputString;
 
-    for(auto a : s.GetSymbols()) {
+    for(auto a : s.get_symbols()) {
         outputString += a + " ";
     }
 
