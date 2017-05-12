@@ -38,4 +38,15 @@ TEST_CASE("Forward chaining works on given test data", "[fc]")
 
     ie::KnowledgeBase kb;
     kb.tell(parser.ast());
+
+    ie::FC fc;
+    auto sym = ie::Symbol("d", true);
+    fc.fc_entails(kb, sym);
+
+    std::vector<std::string> expected = { "b", "a", "p2", "p3", "p1", "d" };
+
+    for ( int i = 0; i < fc.path().size(); ++i ) {
+        INFO("Index: " << i);
+        REQUIRE(fc.path()[i] == expected[i]);
+    }
 }

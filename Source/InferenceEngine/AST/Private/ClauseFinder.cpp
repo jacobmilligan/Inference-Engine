@@ -29,16 +29,15 @@ bool ClauseFinder::visit(const AtomicSentence& atom)
     }
 
     bool is_added = false;
-    for ( auto& r : rules_ ) {
-        auto as_atom = dynamic_cast<const AtomicSentence*>(r);
-        if ( as_atom != nullptr && as_atom->get_value() == atom.get_value() ) {
+    for ( auto& r : facts_ ) {
+        if ( r != nullptr && r->get_value() == atom.get_value() ) {
             is_added = true;
             break;
         }
     }
 
     if ( atom.is_root && !is_added )
-        rules_.push_back(&atom);
+        facts_.push_back(&atom);
     return true;
 }
 
@@ -55,7 +54,7 @@ bool ClauseFinder::visit(const ComplexSentence& complex)
     return true;
 }
 
-const std::vector<const Sentence*>& ClauseFinder::rules() const
+const std::vector<const ComplexSentence*>& ClauseFinder::rules() const
 {
     return rules_;
 }
@@ -63,6 +62,17 @@ const std::vector<const Sentence*>& ClauseFinder::rules() const
 const std::vector<std::string>& ClauseFinder::symbols() const
 {
     return atomics_;
+}
+
+void ClauseFinder::clear()
+{
+    rules_.clear();
+    atomics_.clear();
+}
+
+const std::vector<const AtomicSentence*> ClauseFinder::facts() const
+{
+    return facts_;
 }
 
 
