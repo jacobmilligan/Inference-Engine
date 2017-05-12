@@ -29,16 +29,22 @@ public:
         return symbols_;
     }
 
-    std::unordered_map<std::string, const Sentence*>& clauses()
+    std::unordered_map<std::string, const ComplexSentence*>& rules()
     {
-        return clauses_;
+        return rules_;
+    }
+
+    std::unordered_map<std::string, const AtomicSentence*>& facts()
+    {
+        return facts_;
     }
 
 private:
     ie::ClauseFinder finder_;
     ie::Stringifier stringifier_;
     std::unordered_map<std::string, bool> symbols_;
-    std::unordered_map<std::string, const Sentence*> clauses_;
+    std::unordered_map<std::string, const ComplexSentence*> rules_;
+    std::unordered_map<std::string, const AtomicSentence*> facts_;
 };
 
 

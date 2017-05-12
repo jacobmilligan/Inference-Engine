@@ -37,27 +37,42 @@ int main(int argc, char** argv)
 
 TEST_CASE("KB reads all values in", "[kb]")
 {
-    SECTION("KB gets all clauses")
+    SECTION("KB gets all rules")
     {
-        std::vector<std::string> clauses = {
+        std::vector<std::string> rules = {
             "p2=>p3",
             "p3=>p1",
             "c=>e",
             "b&e=>f",
             "f&g=>h",
             "p1=>d",
-            "p1&p3=>c",
+            "p1&p3=>c"
+        };
+
+        REQUIRE(rules.size() == kb.rules().size());
+
+        for ( auto& c : rules ) {
+            auto result = kb.rules().find(c);
+            auto found = result != kb.rules().end();
+            INFO("Rule:" << c << " Result " << found);
+            REQUIRE(found);
+        }
+    }
+
+    SECTION("KB gets all facts")
+    {
+        std::vector<std::string> facts = {
             "a",
             "b",
             "p2"
         };
 
-        REQUIRE(clauses.size() == kb.clauses().size());
+        REQUIRE(facts.size() == kb.facts().size());
 
-        for ( auto& c : clauses ) {
-            auto result = kb.clauses().find(c);
-            auto found = result != kb.clauses().end();
-            INFO("Clause:" << c << " Result " << found);
+        for ( auto& c : facts ) {
+            auto result = kb.facts().find(c);
+            auto found = result != kb.facts().end();
+            INFO("Fact:" << c << " Result " << found);
             REQUIRE(found);
         }
     }

@@ -25,11 +25,17 @@ void KnowledgeBase::tell(const std::vector<ASTNode::Child>& ast)
     for ( auto& r : finder_.rules() ) {
         r->accept(stringifier_);
         c = stringifier_.current_string();
-        auto found = clauses_.find(c) != clauses_.end();
+        auto found = rules_.find(c) != rules_.end();
         if ( !found ) {
-            clauses_[c] = dynamic_cast<const Sentence*>(r);
+            rules_[c] = r;
         }
         stringifier_.clear();
+    }
+
+    for ( auto& f : finder_.facts() ) {
+        if ( facts_.find(f->get_value()) == facts_.end() ) {
+            facts_[f->get_value()] = f;
+        }
     }
 
     for ( auto& s : finder_.symbols() ) {
