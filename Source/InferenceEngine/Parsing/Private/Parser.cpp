@@ -54,10 +54,11 @@ void Parser::parse(const std::string& str)
         if ( iter->type == TokenType::eof )
             break;
         auto node = parse_sentence(iter, 0);
-        auto as_atomic = dynamic_cast<AtomicSentence*>(node.get());
-        if ( as_atomic != nullptr ) {
-            as_atomic->is_root = true;
-        }
+        auto as_sentence = dynamic_cast<Sentence*>(node.get());
+
+        if ( as_sentence != nullptr )
+            as_sentence->is_root = true;
+
         ast_.push_back(std::move(node));
     }
 }

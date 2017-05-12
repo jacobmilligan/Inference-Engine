@@ -26,15 +26,32 @@ bool ClauseFinder::visit(const AtomicSentence& atom)
     auto contains = std::find(atomics_.begin(), atomics_.end(), atom.get_value());
     if ( contains == atomics_.end() ) {
         atomics_.push_back(atom.get_value());
-        if ( atom.is_root )
-            rules_.push_back(&atom);
     }
+
+    bool is_added = false;
+    for ( auto& r : rules_ ) {
+        auto as_atom = dynamic_cast<const AtomicSentence*>(r);
+        if ( as_atom != nullptr && as_atom->get_value() == atom.get_value() ) {
+            is_added = true;
+            break;
+        }
+    }
+
+    if ( atom.is_root && !is_added )
+        rules_.push_back(&atom);
     return true;
 }
 
 bool ClauseFinder::visit(const ComplexSentence& complex)
 {
-    rules_.push_back(&complex);
+    if ( complex.is_root )
+        rules_.push_back(&complex);
+
+    if ( complex.left() != nullptr ) {
+        complex.left()->accept(*this);
+    }
+    complex.right()->accept(*this);
+
     return true;
 }
 
