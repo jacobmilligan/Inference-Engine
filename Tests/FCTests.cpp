@@ -140,4 +140,23 @@ TEST_CASE("Forward chaining works for all test cases", "[fc]")
             REQUIRE(fc.path()[i] == expected[i]);
         }
     }
+
+    SECTION("Test 3")
+    {
+        std::vector<std::string> expected = { "b", "a", "l", "r", "m", "q", "p", "z" };
+        parser.parse("(p&a)|r=>z; (l&!m)&q=>p; r & l => m; m&l => q;b=>l; !a&b => r; a; b");
+
+        kb.clear();
+        kb.tell(parser.ast());
+
+        auto sym = ie::Symbol("z", true);
+        auto result = fc.fc_entails(kb, sym);
+
+        REQUIRE(result);
+
+        for ( int i = 0; i < fc.path().size(); ++i ) {
+            INFO("Index: " << i);
+            REQUIRE(fc.path()[i] == expected[i]);
+        }
+    }
 }
