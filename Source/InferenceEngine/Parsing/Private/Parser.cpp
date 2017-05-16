@@ -47,6 +47,7 @@ PreprocessingResult Parser::preprocess(const sky::Path& filepath)
 
 void Parser::parse(const std::string& str)
 {
+    ast_.clear();
     Lexer lexer;
     lexer.lex(str);
 

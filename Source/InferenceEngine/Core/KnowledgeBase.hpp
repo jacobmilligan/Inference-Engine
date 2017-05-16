@@ -24,6 +24,15 @@ class KnowledgeBase {
 public:
     void tell(const std::vector<ASTNode::Child>& ast);
 
+    inline void clear()
+    {
+        finder_.clear();
+        stringifier_.clear();
+        symbols_.clear();
+        rules_.clear();
+        facts_.clear();
+    }
+
     std::unordered_map<std::string, bool>& symbols()
     {
         return symbols_;

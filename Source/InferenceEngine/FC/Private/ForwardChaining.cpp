@@ -27,8 +27,12 @@ bool FC::fc_entails(KnowledgeBase& kb, Symbol& q)
 
     for ( auto& c : kb.rules() ) {
         ClauseFinder finder;
-        c.second->accept(finder);
-        count[c.first] = finder.symbols().size() - 1;
+        if ( c.second->connective() == TokenType::implication ) {
+            c.second->left()->accept(finder);
+        } else {
+            c.second->accept(finder);
+        }
+        count[c.first] = finder.symbols().size();
     }
 
     std::queue<std::string> agenda;
@@ -41,17 +45,22 @@ bool FC::fc_entails(KnowledgeBase& kb, Symbol& q)
         auto p = agenda.front();
         agenda.pop();
 
-        path_.push_back(p);
-
-        if ( p == q.GetSymbolName() )
+        if ( p == q.GetSymbolName() ) {
+            path_.push_back(p);
             return true;
+        }
 
         if ( !inferred[p] ) {
+            path_.push_back(p);
             inferred[p] = true;
 
             for ( auto& c: kb.rules() ) {
                 finder.clear();
-                c.second->accept(finder);
+                if ( c.second->left() != nullptr ) {
+                    c.second->left()->accept(finder);
+                } else {
+                    c.second->accept(finder);
+                }
 
                 auto found = std::find(finder.symbols().begin(),
                                        finder.symbols().end(),
