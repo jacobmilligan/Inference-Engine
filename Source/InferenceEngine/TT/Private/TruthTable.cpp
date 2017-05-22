@@ -5,7 +5,6 @@
 
 #include "InferenceEngine/AST/ResolutionVisitor.hpp"
 #include "InferenceEngine/TT/TruthTable.hpp"
-#include "InferenceEngine/TT/Model.hpp"
 
 namespace ie {
 
