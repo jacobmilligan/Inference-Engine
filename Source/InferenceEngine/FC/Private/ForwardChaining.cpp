@@ -14,9 +14,9 @@
 namespace ie {
 
 
-bool FC::fc_entails(KnowledgeBase& kb, Symbol& q)
+ChainingResult FC::fc_entails(const KnowledgeBase& kb, const Symbol& q) const
 {
-    path_.clear();
+    ChainingResult result;
 
     std::unordered_map<std::string, unsigned long> count;
     std::unordered_map<std::string, bool> inferred;
@@ -46,12 +46,13 @@ bool FC::fc_entails(KnowledgeBase& kb, Symbol& q)
         agenda.pop();
 
         if ( p == q.GetSymbolName() ) {
-            path_.push_back(p);
-            return true;
+            result.path.push_back(p);
+            result.value = true;
+            return result;
         }
 
         if ( !inferred[p] ) {
-            path_.push_back(p);
+            result.path.push_back(p);
             inferred[p] = true;
 
             for ( auto& c: kb.rules() ) {
@@ -79,7 +80,9 @@ bool FC::fc_entails(KnowledgeBase& kb, Symbol& q)
             }
         }
     }
-    return false;
+
+    result.value = false;
+    return result;
 }
 
 }

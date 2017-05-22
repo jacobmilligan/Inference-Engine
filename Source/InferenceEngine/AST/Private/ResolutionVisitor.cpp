@@ -66,7 +66,7 @@ bool ResolutionVisitor::calculate(TokenType logic_operator, bool res1, bool res2
             }
 
         default:
-        std::cerr << "Error with operator calculation " << std::endl;
+            std::cerr << "Error with operator calculation " << std::endl;
             break;
     }
 }
@@ -80,9 +80,9 @@ bool ResolutionVisitor::solve(Token tok) {
     return symbol_values_[tok.literal];
 }
 
-bool ResolutionVisitor::GetSolution(std::map<std::string, bool>& model, const ComplexSentence& complex) {
+bool ResolutionVisitor::GetSolution(std::map<std::string, bool>& model, const Sentence& complex) {
 
-   symbol_values_ = model;
+    symbol_values_ = model;
 
 
     return complex.accept(*this);

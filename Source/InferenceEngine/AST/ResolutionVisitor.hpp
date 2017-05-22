@@ -21,7 +21,7 @@
 namespace ie {
 
 
-    class ResolutionVisitor : public ASTVisitor {
+class ResolutionVisitor : public ASTVisitor {
 public:
     // old functions
     bool visit(const Sentence& sentence) override;
@@ -35,7 +35,7 @@ public:
     bool calculate(TokenType logic_operator, bool res1, bool res2);
 
     //Public call to return overall results
-    bool GetSolution(std::map<std::string, bool>& model, const ComplexSentence& complex);
+    bool GetSolution(std::map<std::string, bool>& model, const Sentence& complex);
 
 private:
 

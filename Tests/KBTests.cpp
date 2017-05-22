@@ -54,7 +54,7 @@ TEST_CASE("KB reads all values in", "[kb]")
         for ( auto& c : rules ) {
             auto result = kb.rules().find(c);
             auto found = result != kb.rules().end();
-            INFO("Rule:" << c << " Result " << found);
+            INFO("Rule:" << c << " result " << found);
             REQUIRE(found);
         }
     }
@@ -72,7 +72,7 @@ TEST_CASE("KB reads all values in", "[kb]")
         for ( auto& c : facts ) {
             auto result = kb.facts().find(c);
             auto found = result != kb.facts().end();
-            INFO("Fact:" << c << " Result " << found);
+            INFO("Fact:" << c << " result " << found);
             REQUIRE(found);
         }
     }
@@ -98,7 +98,7 @@ TEST_CASE("KB reads all values in", "[kb]")
         for ( auto& s : symbols ) {
             auto result = kb.symbols().find(s);
             auto found = result != kb.symbols().end();
-            INFO("Clause:" << s << " Result " << found);
+            INFO("Clause:" << s << " result " << found);
             REQUIRE(found);
         }
     }

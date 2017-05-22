@@ -19,10 +19,17 @@
 
 namespace ie {
 
+enum class InferenceMethod {
+    TT,
+    FC,
+    BC,
+    unknown
+};
 
 class KnowledgeBase {
 public:
     void tell(const std::vector<ASTNode::Child>& ast);
+    void ask(const InferenceMethod method, const Symbol& q);
 
     inline void clear()
     {
@@ -33,24 +40,24 @@ public:
         facts_.clear();
     }
 
-    std::unordered_map<std::string, bool>& symbols()
+    const std::unordered_map<std::string, bool>& symbols() const
     {
         return symbols_;
     }
 
-    std::unordered_map<std::string, const ComplexSentence*>& rules()
+    const std::unordered_map<std::string, const ComplexSentence*>& rules() const
     {
         return rules_;
     }
 
-    std::unordered_map<std::string, const AtomicSentence*>& facts()
+    const std::unordered_map<std::string, const AtomicSentence*>& facts() const
     {
         return facts_;
     }
 
 private:
-    ie::ClauseFinder finder_;
-    ie::Stringifier stringifier_;
+    ClauseFinder finder_;
+    Stringifier stringifier_;
     std::unordered_map<std::string, bool> symbols_;
     std::unordered_map<std::string, const ComplexSentence*> rules_;
     std::unordered_map<std::string, const AtomicSentence*> facts_;

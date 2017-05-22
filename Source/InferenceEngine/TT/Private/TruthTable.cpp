@@ -7,7 +7,7 @@
 #include "InferenceEngine/TT/TruthTable.hpp"
 
 namespace ie {
-    //Trial recursive algo for TT
+//Trial recursive algo for TT
 void TruthTable::ConstructTruthTableRecursive(std::vector<Symbol*> symbols,
                                               matrix& tempMatrix, std::vector<Symbol*> partialModelVal, double modalSize )
 {
@@ -28,7 +28,7 @@ void TruthTable::ConstructTruthTableRecursive(std::vector<Symbol*> symbols,
             if(ruleValue) {
                 //add new rule and its result as a single symbol to the truth table 'row'
                 partialModelVal.push_back(
-                        new Symbol("rule" + std::to_string(ruleNum++), ruleValue)
+                    new Symbol("rule" + std::to_string(ruleNum++), ruleValue)
                 );
 
                 //add completed row
@@ -40,29 +40,29 @@ void TruthTable::ConstructTruthTableRecursive(std::vector<Symbol*> symbols,
     }
     else{
 
-    // P <- First(symbols)
-    Symbol* firstTrue = symbols[symbols.size()-1];
-    symbols.pop_back();
-    //Add P = True to partial model
-    std::vector<Symbol*> partialModelTrue = partialModelVal;
-    partialModelTrue.push_back(firstTrue);
+        // P <- First(symbols)
+        Symbol* firstTrue = symbols[symbols.size()-1];
+        symbols.pop_back();
+        //Add P = True to partial model
+        std::vector<Symbol*> partialModelTrue = partialModelVal;
+        partialModelTrue.push_back(firstTrue);
 
-    //Create a true and false version
-    firstTrue->SetValue(true);
-    Symbol* firstFalse = new Symbol(firstTrue->GetSymbolName(), false);
-    //Add P = False to Partial model
-    std::vector<Symbol*> partialModelFalse = partialModelVal;
-    partialModelFalse.push_back(firstFalse);
+        //Create a true and false version
+        firstTrue->SetValue(true);
+        Symbol* firstFalse = new Symbol(firstTrue->GetSymbolName(), false);
+        //Add P = False to Partial model
+        std::vector<Symbol*> partialModelFalse = partialModelVal;
+        partialModelFalse.push_back(firstFalse);
 
-    //Rest <- Rest(symbols)
-    std::vector<Symbol*> rest = symbols;
+        //Rest <- Rest(symbols)
+        std::vector<Symbol*> rest = symbols;
 
-    //2 x branches through tree below
-    modalSize -= 1;
+        //2 x branches through tree below
+        modalSize -= 1;
 
-    //Recursive check of binary tree results i.e. is our query true in either the symbol = true || symbol = false branches
-    ConstructTruthTableRecursive(rest, tempMatrix, partialModelTrue, modalSize); // model U {P = true}
-    ConstructTruthTableRecursive(rest, tempMatrix,  partialModelFalse, modalSize); //model U {P = false}
+        //Recursive check of binary tree results i.e. is our query true in either the symbol = true || symbol = false branches
+        ConstructTruthTableRecursive(rest, tempMatrix, partialModelTrue, modalSize); // model U {P = true}
+        ConstructTruthTableRecursive(rest, tempMatrix,  partialModelFalse, modalSize); //model U {P = false}
     }
 
 }
@@ -75,7 +75,7 @@ std::vector<Symbol*> TruthTable::GetSymbolsList() {
     return symbolList_;
 }
 
-TruthTable::TruthTable(std::vector<Symbol*>& symbols, std::vector<const ComplexSentence*> kb_rules) {
+TruthTable::TruthTable(std::vector<Symbol*>& symbols, std::vector<const Sentence*> kb_rules) {
 
     //Add current set of rules
     rules_ = kb_rules;
@@ -141,6 +141,6 @@ bool TruthTable::modalMatch(const std::vector<Symbol*> row, const std::vector<Sy
     }
 
     return correctComparisons;
-    }
+}
 
 }
