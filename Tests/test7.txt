@@ -1,4 +1,4 @@
 TELL
-b&f=>e&f|g;b&f=>e&f|!g=>b;b=>q|r&s;r;g;b
+b&f=>e;b&r=>!g;!g=>s;b=>f;r;b
 ASK
 s
