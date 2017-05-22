@@ -14,6 +14,7 @@
 #include "InferenceEngine/Core/KnowledgeBase.hpp"
 
 #include <algorithm>
+#include <InferenceEngine/BC/BC.hpp>
 
 namespace ie {
 
@@ -62,31 +63,11 @@ std::string join(const std::vector<std::string>& strings, const std::string& del
 
 void KnowledgeBase::ask(const InferenceMethod method, const Symbol& q)
 {
-    FC fc;
-
     switch (method) {
         case InferenceMethod::TT:
         {
-            // Convert symbols into vector for TT
-            std::vector<Symbol*> symbols;
-            for ( auto& s : symbols_ ) {
-                symbols.push_back(new Symbol(s.first, s.second));
-            }
-
-            // Convert rules and facts into single sentence vector
-            // for TT
-            std::vector<const Sentence*> rules;
-            for ( auto& r : rules_ ) {
-                auto as_sentence = dynamic_cast<const Sentence*>(r.second);
-                rules.push_back(as_sentence);
-            }
-            for ( auto& f : facts_ ) {
-                auto as_sentence = dynamic_cast<const Sentence*>(f.second);
-                rules.push_back(as_sentence);
-            }
-
-            TruthTable tt(symbols, rules);
-            auto response = tt.Ask(symbols);
+            TruthTable tt;
+            auto response = tt.ask(*this, q);
 
             if ( response.result ) {
                 std::cout << "YES: " << response.models_inferred << std::endl;
@@ -96,6 +77,7 @@ void KnowledgeBase::ask(const InferenceMethod method, const Symbol& q)
         } break;
         case InferenceMethod::FC:
         {
+            FC fc;
             auto response = fc.fc_entails(*this, q);
             if ( response.value ) {
                 std::cout << "YES: " << join(response.path, ", ");
@@ -105,6 +87,23 @@ void KnowledgeBase::ask(const InferenceMethod method, const Symbol& q)
             std::cout << std::endl;
         } break;
         case InferenceMethod::BC:
+        {
+            BC bc;
+            std::vector<const ComplexSentence*> rules;
+            for ( auto& r : rules_ ) {
+                rules.push_back(r.second);
+            }
+            std::map<std::string, bool> facts;
+            for ( auto& f : facts_ ) {
+                facts.emplace(f.first, true);
+            }
+            auto response = bc.bc_entails(rules, q.GetSymbolName(), facts);
+            if ( response ) {
+                std::cout << "YES: ";
+            } else {
+                std::cout << "NO";
+            }
+        } break;
         default:
             std::cout << "IEngine: Invalid ASK statement" << std::endl;
     }

@@ -55,6 +55,20 @@ public:
         return facts_;
     }
 
+    const std::unordered_map<std::string, const Sentence*> as_sentence() const
+    {
+        std::unordered_map<std::string, const Sentence*> result;
+        for ( auto& r : rules_ ) {
+            auto as_sentence = dynamic_cast<const Sentence*>(r.second);
+            result.emplace(r.first, as_sentence);
+        }
+        for ( auto& f : facts_ ) {
+            auto as_sentence = dynamic_cast<const Sentence*>(f.second);
+            result.emplace(f.first, as_sentence);
+        }
+        return result;
+    };
+
 private:
     ClauseFinder finder_;
     Stringifier stringifier_;

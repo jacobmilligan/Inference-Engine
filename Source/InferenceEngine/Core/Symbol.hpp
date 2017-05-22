@@ -16,6 +16,8 @@ namespace ie {
 
     public:
 
+
+        bool hasConjunctionConnective;
         Symbol();
 
         Symbol(std::string s, bool val) : symbolName_ (s), value_(val) {};
