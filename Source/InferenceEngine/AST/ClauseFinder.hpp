@@ -43,6 +43,10 @@ public:
     const std::vector<const AtomicSentence*> facts() const;
 
     void clear();
+
+
+    //Connectives at the complex level (backwards chaining)
+    std::stack<TokenType> connectives;
 private:
     std::vector<const ComplexSentence*> rules_;
     std::vector<const AtomicSentence*> facts_;

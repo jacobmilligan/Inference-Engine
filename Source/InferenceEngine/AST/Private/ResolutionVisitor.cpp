@@ -86,4 +86,20 @@ bool ResolutionVisitor::get_solution(std::map<std::string, bool>& modal, const S
     return complex.accept(*this);
 }
 
+bool ResolutionVisitor::get_solution(std::map<std::string, bool>& modal, const ComplexSentence& complex) {
+    symbol_values_ = modal;
+    return complex.accept(*this);
+}
+
+bool ResolutionVisitor::get_solution(std::map<std::string, bool>& modal, const AtomicSentence& atomic) {
+    symbol_values_ = modal;
+    return atomic.accept(*this);
+}
+
+std::map<std::string, bool> ResolutionVisitor::get_symbols_map() {
+    return symbol_values_;
+}
+
+
+
 }

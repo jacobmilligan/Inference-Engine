@@ -43,6 +43,7 @@ bool ClauseFinder::visit(const AtomicSentence& atom)
 
 bool ClauseFinder::visit(const ComplexSentence& complex)
 {
+    connectives.push(complex.connective());
     if ( complex.is_root )
         rules_.push_back(&complex);
 

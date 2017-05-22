@@ -32,19 +32,32 @@ public:
 
     std::vector<std::string> get_symbols();
 
+    std::map<std::string, bool> get_symbols_map();
+
     //calculates result of operator on left or right value
     //If only lVal then it will be the negation operator and will calculate
     bool calculate(TokenType logic_operator, bool lVal, bool rVal);
 
     //Public call to return overall results
     bool get_solution(std::map<std::string, bool>& modal, const Sentence& complex);
-private:
+
+    //Public call to return overall results
+    bool get_solution(std::map<std::string, bool>& modal, const ComplexSentence& complex);
+
+    //get solution atomic version
+    bool get_solution(std::map<std::string, bool>& modal, const AtomicSentence& atomic);
 
     std::map<std::string, bool> symbol_values_;
+
+private:
+
+
 
     std::vector<std::string> symbols_;
 
     bool solve(Token tok);
+
+
 
 };
 

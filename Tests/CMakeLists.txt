@@ -6,7 +6,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
 # Parser tests config
 set(PARSER_TESTS_NAME parser_tests)
-add_executable(${PARSER_TESTS_NAME} ParserTests.cpp TruthTableTests.cpp)
+add_executable(${PARSER_TESTS_NAME} ParserTests.cpp TruthTableTests.cpp BCTests.cpp)
 target_link_libraries(${PARSER_TESTS_NAME} InferenceLib)
 target_link_libraries(${PARSER_TESTS_NAME} skyrocket_path)
 target_include_directories(${PARSER_TESTS_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/Deps)
@@ -44,3 +44,10 @@ target_link_libraries(${KB_TESTS_NAME} skyrocket_path)
 target_include_directories(${KB_TESTS_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/Deps)
 target_include_directories(${KB_TESTS_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/Source)
 
+# BC Tests config
+set(BC_TESTS_NAME bc_tests)
+add_executable(${BC_TESTS_NAME} BCTests.cpp)
+target_link_libraries(${BC_TESTS_NAME} InferenceLib)
+target_link_libraries(${BC_TESTS_NAME} skyrocket_path)
+target_include_directories(${BC_TESTS_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/Deps)
+target_include_directories(${BC_TESTS_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/Source)
