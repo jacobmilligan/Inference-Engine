@@ -9,6 +9,7 @@
 //  Copyright (c) 2016 Jacob Milligan. All rights reserved.
 //
 
+#include <tic.h>
 #include "InferenceEngine/AST/SymbolFinder.hpp"
 
 namespace ie {
@@ -30,6 +31,7 @@ bool SymbolFinder::visit(const AtomicSentence& atom)
 }
 
 bool SymbolFinder::visit(const ComplexSentence& complex) {
+
     if ( complex.left() != nullptr ) {
         complex.left()->accept(*this);
     }

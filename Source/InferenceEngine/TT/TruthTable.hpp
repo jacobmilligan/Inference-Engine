@@ -8,7 +8,7 @@
 #include <vector>
 #include <InferenceEngine/AST/ClauseFinder.hpp>
 #include <InferenceEngine/Core/Response.hpp>
-
+#include "InferenceEngine/AST/SymbolFinder.hpp"
 #include "InferenceEngine/Core/Symbol.hpp"
 #include "InferenceEngine/TT/TruthTable.hpp"
 
@@ -18,29 +18,32 @@ using matrix = std::vector <std::vector<Symbol *>>;
 
 class TruthTable {
 private:
-    //Will eventually be refactor to not need to be passed all symbols around and just just clauseFinder ref
-    std::vector<const ComplexSentence*> rules_;
 
-    double size_;
+    std::vector<const Sentence*> rules_;
+
     //symbols_ list following construction of truth table
     std::vector<Symbol*> symbolList_;
 
     //Truth table matrix itself - containing models(rows) of symbols
     matrix matrixModals_;
 
-    void ConstructTruthTableRecursive(std::vector<Symbol *> symbols,
-                                      matrix& tempMatrix, std::vector<Symbol *> partialModelVal, double modalSize);
+    //Constructs entire truth table given symbols and rules
+    void construct_truth_table_recursive(std::vector<Symbol *> symbols,
+                                         matrix& tempMatrix, std::vector<Symbol *> partialModelVal, double modalSize);
 
     std::map<std::string, bool> ConvertToMap(std::vector<Symbol*> symbolList);
 
 
-    bool modalMatch(const std::vector<Symbol*> row, const std::vector<Symbol*> askModal);
+    bool modal_match(const std::vector<Symbol *> row, const std::vector<Symbol *> askModal);
+
+    //Checks if a symbol is in our symbol list
+    bool ask_symbols_match(const std::vector<Symbol *> modal);
 
 public:
 
     //Constructor to truth table:
     //Truth table is calculated within the constructor
-    TruthTable(std::vector<Symbol *>& symbols, std::vector<const ComplexSentence*> kb_rules);
+    TruthTable(const ie::SymbolFinder& symFind, std::vector<const Sentence*> kb_rules);
 
     //Return copy of truth table
     matrix GetTruthTableMatrix();
@@ -48,7 +51,7 @@ public:
     //Return copy of symbols used in truth table
     std::vector<Symbol *> GetSymbolsList();
 
-    Response Ask(const std::vector<Symbol*> symbolList);
+    Response ask(const std::vector<Symbol *> symbolList);
 
 
 };

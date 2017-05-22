@@ -4,12 +4,16 @@
 
 
 #include <InferenceEngine/AST/ResolutionVisitor.hpp>
+#include <InferenceEngine/AST/SymbolFinder.hpp>
 #include "InferenceEngine/TT/TruthTable.hpp"
+#include <algorithm>
+
 
 namespace ie {
     //Trial recursive algo for TT
-void TruthTable::ConstructTruthTableRecursive(std::vector<Symbol*> symbols,
-                                              matrix& tempMatrix, std::vector<Symbol*> partialModelVal, double modalSize )
+void TruthTable::construct_truth_table_recursive(std::vector<Symbol *> symbols,
+                                                 matrix& tempMatrix, std::vector<Symbol *> partialModelVal,
+                                                 double modalSize)
 {
     if(modalSize == 0){
 
@@ -22,7 +26,7 @@ void TruthTable::ConstructTruthTableRecursive(std::vector<Symbol*> symbols,
         for(auto rule : rules_) {
 
             //result of rule for this model
-            bool ruleValue = r.GetSolution(map, *rule);
+            bool ruleValue = r.get_solution(map, *rule);
 
             //Only need knowledge modal that adheres to the KB rules
             if(ruleValue) {
@@ -61,8 +65,8 @@ void TruthTable::ConstructTruthTableRecursive(std::vector<Symbol*> symbols,
     modalSize -= 1;
 
     //Recursive check of binary tree results i.e. is our query true in either the symbol = true || symbol = false branches
-    ConstructTruthTableRecursive(rest, tempMatrix, partialModelTrue, modalSize); // model U {P = true}
-    ConstructTruthTableRecursive(rest, tempMatrix,  partialModelFalse, modalSize); //model U {P = false}
+        construct_truth_table_recursive(rest, tempMatrix, partialModelTrue, modalSize); // model U {P = true}
+        construct_truth_table_recursive(rest, tempMatrix, partialModelFalse, modalSize); //model U {P = false}
     }
 
 }
@@ -75,18 +79,27 @@ std::vector<Symbol*> TruthTable::GetSymbolsList() {
     return symbolList_;
 }
 
-TruthTable::TruthTable(std::vector<Symbol*>& symbols, std::vector<const ComplexSentence*> kb_rules) {
+TruthTable::TruthTable(const ie::SymbolFinder& symFind, std::vector<const Sentence*> kb_rules) {
+
+    std::vector<ie::Symbol*> observations = std::vector<ie::Symbol*>();
+
+    for(auto& str : symFind.get_symbols()){
+        ie::Symbol* s = new ie::Symbol(str, true);
+        observations.push_back(s);
+    }
 
     //Add current set of rules
     rules_ = kb_rules;
 
     //Create new Truth Table
 
-    symbolList_ = symbols;
+    symbolList_ = observations;
     //matrixModals_ = ConstructTruthTable(symbols);
     matrixModals_ = std::vector<std::vector<Symbol*>>();
     std::vector<Symbol*> partialModel = std::vector<Symbol*>();
-    ConstructTruthTableRecursive(symbols, matrixModals_, partialModel, symbols.size());
+
+
+    construct_truth_table_recursive(observations, matrixModals_, partialModel, observations.size());
 }
 
 std::map<std::string, bool> TruthTable::ConvertToMap(const std::vector<Symbol*> symbolList){
@@ -99,16 +112,21 @@ std::map<std::string, bool> TruthTable::ConvertToMap(const std::vector<Symbol*> 
     return returnMap;
 }
 
-Response TruthTable::Ask(const std::vector<Symbol*> askModal) {
+Response TruthTable::ask(const std::vector<Symbol *> askModal) {
     //symbols_ are all calculated at this stage - therefore we just check for truth in an entire row/'modal'
     //We are searching through the entire pre-calculated truth table to find a row/'modal' that
     //modelA is true in
+
+    //We must responde false if we do not know a symbol (i.e. we are unsure)
+    if(!ask_symbols_match(askModal)){
+        return Response(0, false);
+    }
 
     auto& symbolList = askModal;
     double correctModals = 0;
 
     for (auto& mod : matrixModals_) {
-        if(modalMatch(mod, askModal)){
+        if(modal_match(mod, askModal)){
             correctModals++;
         }
     }
@@ -118,8 +136,7 @@ Response TruthTable::Ask(const std::vector<Symbol*> askModal) {
     return res;
 }
 
-bool TruthTable::modalMatch(const std::vector<Symbol*> row, const std::vector<Symbol*> askModal){
-
+bool TruthTable::modal_match(const std::vector<Symbol *> row, const std::vector<Symbol *> askModal){
     //if there is no symbols equal then there is no match to confirm
     bool correctComparisons = false;
 
@@ -141,6 +158,24 @@ bool TruthTable::modalMatch(const std::vector<Symbol*> row, const std::vector<Sy
     }
 
     return correctComparisons;
+}
+
+bool TruthTable::ask_symbols_match(const std::vector<Symbol *> model){
+
+    double count = model.size();
+
+    for(auto* a : model){
+        //if not in list return false
+        for(auto* sym : symbolList_){
+            if(sym->GetSymbolName() == a->GetSymbolName()){
+                count--;
+            }
+        }
     }
+    return count == 0;
+}
 
 }
+
+
+
