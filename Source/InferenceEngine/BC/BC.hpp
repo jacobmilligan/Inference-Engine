@@ -17,7 +17,15 @@ namespace ie {
 
 class BC {
 public:
+    /// @brief Checks whether KB entails q
+    /// @param kb The knowledge base
+    /// @param q The query symbol
+    /// @return True if entails, false otherwise
     bool bc_entails(const KnowledgeBase& kb, const Symbol& q);
+
+    /// @brief Gets the path taken by the last execution of
+    /// bc_entails
+    /// @return Vector of symbols strings
     std::vector<std::string> path();
 private:
     std::vector<std::string> path_;
