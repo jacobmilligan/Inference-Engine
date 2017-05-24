@@ -89,17 +89,9 @@ void KnowledgeBase::ask(const InferenceMethod method, const Symbol& q)
         case InferenceMethod::BC:
         {
             BC bc;
-            std::vector<const ComplexSentence*> rules;
-            for ( auto& r : rules_ ) {
-                rules.push_back(r.second);
-            }
-            std::map<std::string, bool> facts;
-            for ( auto& f : facts_ ) {
-                facts.emplace(f.first, true);
-            }
-            auto response = bc.bc_entails(rules, q.GetSymbolName(), facts);
+            auto response = bc.bc_entails(*this, q);
             if ( response ) {
-                std::cout << "YES: ";
+                std::cout << "YES: " << join(bc.path(), ", ");
             } else {
                 std::cout << "NO";
             }
