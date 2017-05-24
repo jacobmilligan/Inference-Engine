@@ -45,12 +45,13 @@ public:
     void clear();
 
 
-    //Connectives at the complex level (backwards chaining)
-    std::stack<TokenType> connectives;
+    const std::stack<const TokenType> connectives() const;
+
 private:
     std::vector<const ComplexSentence*> rules_;
     std::vector<const AtomicSentence*> facts_;
     std::vector<std::string> atomics_;
+    std::stack<const TokenType> connectives_;
 };
 
 

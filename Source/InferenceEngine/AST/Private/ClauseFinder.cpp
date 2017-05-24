@@ -69,11 +69,19 @@ void ClauseFinder::clear()
 {
     rules_.clear();
     atomics_.clear();
+
+    while(!connectives_.empty()){
+        connectives_.pop();
+    }
 }
 
 const std::vector<const AtomicSentence*> ClauseFinder::facts() const
 {
     return facts_;
+}
+
+const std::stack<const TokenType> ClauseFinder::connectives() const {
+    return connectives_;
 }
 
 

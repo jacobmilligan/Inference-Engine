@@ -6,11 +6,7 @@
 
 #define CATCH_CONFIG_RUNNER
 #include <catch/catch.hpp>
-#include <Path/Path.hpp>
-#include <InferenceEngine/Parsing/Parser.hpp>
-#include <InferenceEngine/Core/KnowledgeBase.hpp>
-#include <InferenceEngine/BC/BC.hpp>
-
+#include <InferenceEngine/BC/BackwardChaining.hpp>
 sky::Path root("");
 
 int main(int argc, char** argv)
@@ -31,7 +27,7 @@ TEST_CASE("Forward chaining works on given test data", "[fc]")
     auto pre = ie::Parser::preprocess(path);
     parser.parse(pre.tell);
 
-    ie::BC backChain;
+    ie::BackwardChaining backChain;
 
     std::map<std::string, bool> newMap;
     ie::KnowledgeBase kb;

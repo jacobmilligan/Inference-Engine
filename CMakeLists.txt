@@ -16,9 +16,7 @@ add_subdirectory(${PROJECT_SOURCE_DIR}/Tests)
 get_property(SRC GLOBAL PROPERTY SOURCE_LIST)
 
 add_executable(${PROJECT_NAME}
-        ${PROJECT_SOURCE_DIR}/Source/InferenceEngine/Main.cpp "${SRC}" Source/InferenceEngine/BC/BC.hpp)
+        ${PROJECT_SOURCE_DIR}/Source/InferenceEngine/Main.cpp "${SRC}" Source/InferenceEngine/BC/BackwardChaining.hpp Source/InferenceEngine/BC/BCatomic.hpp Source/InferenceEngine/BC/PremiseWrapper.hpp Source/InferenceEngine/BC/Private/BackwardChaining.cpp)
 
 target_link_libraries(${PROJECT_NAME} skyrocket_path)
 
-# Build static library for testing
-add_library(InferenceLib "${SRC}" Source/InferenceEngine/AST/BackwardsChainingVisitor.hpp)
