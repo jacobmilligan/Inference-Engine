@@ -36,3 +36,5 @@
 # Directories
 cmake-build-debug/
 .idea/
+Tests/.idea
+Tests/results
