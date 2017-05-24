@@ -6,11 +6,13 @@
 
 namespace ie {
 
-    bool Symbol::GetValue() {
+    bool Symbol::GetValue() const
+    {
         return value_;
     }
 
-    std::string Symbol::GetSymbolName() {
+    std::string Symbol::GetSymbolName() const
+    {
         return symbolName_;
     }
 

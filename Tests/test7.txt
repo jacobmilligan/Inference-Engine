@@ -1,0 +1,4 @@
+TELL
+b&f=>e;b&r=>!g;!g=>s;b=>f;r;b
+ASK
+s

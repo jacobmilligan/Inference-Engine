@@ -16,26 +16,35 @@
 
 #include <vector>
 #include <queue>
+#include <tuple>
 #include <unordered_map>
 
 namespace ie {
 
+struct ChainingResult {
+    ChainingResult()
+        : value(false)
+    {}
+
+    bool value;
+    std::vector<std::string> path;
+};
 
 class FC {
 public:
-    bool fc_entails(KnowledgeBase& kb, Symbol& q);
+    ChainingResult fc_entails(const KnowledgeBase& kb, const Symbol& q) const;
 
-    inline const ComplexSentence* as_complex(const Sentence* sentence)
+    inline const ComplexSentence* as_complex(const Sentence* sentence) const
     {
         return dynamic_cast<const ComplexSentence*>(sentence);
     }
 
-    inline const AtomicSentence* as_atomic(const Sentence* sentence)
+    inline const AtomicSentence* as_atomic(const Sentence* sentence) const
     {
         return dynamic_cast<const AtomicSentence*>(sentence);
     }
 
-    inline std::vector<std::string>& path()
+    inline const std::vector<std::string>& path() const
     {
         return path_;
     }

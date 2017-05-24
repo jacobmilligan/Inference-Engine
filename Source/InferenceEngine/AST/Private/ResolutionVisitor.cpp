@@ -25,22 +25,16 @@ bool ResolutionVisitor::visit(const AtomicSentence& atom)
 }
 
 bool ResolutionVisitor::visit(const ComplexSentence& complex) {
+    TokenType logic_operator = complex.connective();
+    bool res1 = complex.right()->accept(*this);
+    bool res2;
 
-    if(typeid(ComplexSentence) == typeid(AtomicSentence)){
-        return visit(complex);
+    //can be no right side symbol in case of negation
+    if(complex.left() != nullptr) {
+        res2 = complex.left()->accept(*this);
     }
-    else{
-        TokenType logic_operator = complex.connective();
-        bool res1 = complex.right()->accept(*this);
-        bool res2;
 
-        //can be no right side symbol in case of negation
-        if(complex.left() != nullptr) {
-            res2 = complex.left()->accept(*this);
-        }
-
-        return calculate(logic_operator, res2, res1);
-    }
+    return calculate(logic_operator, res2, res1);
 }
 
 bool ResolutionVisitor::calculate(TokenType logic_operator, bool lVal, bool rVal){
@@ -66,7 +60,7 @@ bool ResolutionVisitor::calculate(TokenType logic_operator, bool lVal, bool rVal
             }
 
         default:
-        std::cerr << "Error with operator calculation " << std::endl;
+            std::cerr << "Error with operator calculation " << std::endl;
             break;
     }
 }
@@ -80,23 +74,22 @@ bool ResolutionVisitor::solve(Token tok) {
     return symbol_values_[tok.literal];
 }
 
-
-bool ResolutionVisitor::get_solution(std::map<std::string, bool>& modal, const Sentence& complex) {
+bool ResolutionVisitor::get_solution(const std::unordered_map<std::string, bool>& modal, const Sentence& complex) {
     symbol_values_ = modal;
     return complex.accept(*this);
 }
 
-bool ResolutionVisitor::get_solution(std::map<std::string, bool>& modal, const ComplexSentence& complex) {
+bool ResolutionVisitor::get_solution(const std::unordered_map<std::string, bool>& modal, const ComplexSentence& complex) {
     symbol_values_ = modal;
     return complex.accept(*this);
 }
 
-bool ResolutionVisitor::get_solution(std::map<std::string, bool>& modal, const AtomicSentence& atomic) {
+bool ResolutionVisitor::get_solution(const std::unordered_map<std::string, bool>& modal, const AtomicSentence& atomic) {
     symbol_values_ = modal;
     return atomic.accept(*this);
 }
 
-std::map<std::string, bool> ResolutionVisitor::get_symbols_map() {
+std::unordered_map<std::string, bool> ResolutionVisitor::get_symbols_map() {
     return symbol_values_;
 }
 

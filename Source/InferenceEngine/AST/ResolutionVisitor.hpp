@@ -16,13 +16,15 @@
 #include <vector>
 #include <InferenceEngine/Core/Symbol.hpp>
 #include <queue>
-#include <map>
+#include <unordered_map>
+#include <InferenceEngine/Core/KnowledgeBase.hpp>
 
 namespace ie {
 
 
-    class ResolutionVisitor : public ASTVisitor {
+class ResolutionVisitor : public ASTVisitor {
 public:
+    ResolutionVisitor() {}
 
     bool visit(const Sentence& sentence) override;
 
@@ -32,27 +34,24 @@ public:
 
     std::vector<std::string> get_symbols();
 
-    std::map<std::string, bool> get_symbols_map();
+    std::unordered_map<std::string, bool> get_symbols_map();
 
     //calculates result of operator on left or right value
     //If only lVal then it will be the negation operator and will calculate
     bool calculate(TokenType logic_operator, bool lVal, bool rVal);
 
     //Public call to return overall results
-    bool get_solution(std::map<std::string, bool>& modal, const Sentence& complex);
+    bool get_solution(const std::unordered_map<std::string, bool>& modal, const Sentence& complex);
 
     //Public call to return overall results
-    bool get_solution(std::map<std::string, bool>& modal, const ComplexSentence& complex);
+    bool get_solution(const std::unordered_map<std::string, bool>& modal, const ComplexSentence& complex);
 
     //get solution atomic version
-    bool get_solution(std::map<std::string, bool>& modal, const AtomicSentence& atomic);
+    bool get_solution(const std::unordered_map<std::string, bool>& modal, const AtomicSentence& atomic);
 
-    std::map<std::string, bool> symbol_values_;
+    std::unordered_map<std::string, bool> symbol_values_;
 
 private:
-
-
-
     std::vector<std::string> symbols_;
 
     bool solve(Token tok);

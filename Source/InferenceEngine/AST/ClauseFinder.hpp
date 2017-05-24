@@ -11,6 +11,7 @@
 
 #pragma once
 
+#include <stack>
 #include "InferenceEngine/AST/ASTVisitor.hpp"
 
 namespace ie {
@@ -42,6 +43,8 @@ public:
 
     const std::vector<const AtomicSentence*> facts() const;
 
+    const std::vector<std::string>& positive_atomics() const;
+
     void clear();
 
 
@@ -51,6 +54,9 @@ private:
     std::vector<const ComplexSentence*> rules_;
     std::vector<const AtomicSentence*> facts_;
     std::vector<std::string> atomics_;
+    std::vector<std::string> positive_atomics_;
+
+    TokenType last_connective_;
 };
 
 

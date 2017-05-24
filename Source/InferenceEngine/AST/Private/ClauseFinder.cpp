@@ -26,6 +26,9 @@ bool ClauseFinder::visit(const AtomicSentence& atom)
     auto contains = std::find(atomics_.begin(), atomics_.end(), atom.get_value());
     if ( contains == atomics_.end() ) {
         atomics_.push_back(atom.get_value());
+        if ( connectives.empty() || connectives.top() != TokenType::negation ) {
+            positive_atomics_.push_back(atom.get_value());
+        }
     }
 
     bool is_added = false;
@@ -44,6 +47,7 @@ bool ClauseFinder::visit(const AtomicSentence& atom)
 bool ClauseFinder::visit(const ComplexSentence& complex)
 {
     connectives.push(complex.connective());
+
     if ( complex.is_root )
         rules_.push_back(&complex);
 
@@ -69,11 +73,20 @@ void ClauseFinder::clear()
 {
     rules_.clear();
     atomics_.clear();
+    positive_atomics_.clear();
+    while ( !connectives.empty() ) {
+        connectives.pop();
+    }
 }
 
 const std::vector<const AtomicSentence*> ClauseFinder::facts() const
 {
     return facts_;
+}
+
+const std::vector<std::string>& ClauseFinder::positive_atomics() const
+{
+    return positive_atomics_;
 }
 
 

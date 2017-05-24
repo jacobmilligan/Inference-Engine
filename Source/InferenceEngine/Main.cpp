@@ -1,45 +1,51 @@
-#include "InferenceEngine/Parsing/Parser.hpp"
+#include <InferenceEngine/Parsing/CLIParser.hpp>
 #include <Path/Path.hpp>
-
-//For testing atm (cc)
-#include <iostream>
-#include <cmath>
-#include <InferenceEngine/AST/ResolutionVisitor.hpp>
-#include <InferenceEngine/AST/ClauseFinder.hpp>
-#include <InferenceEngine/AST/SymbolFinder.hpp>
-#include "InferenceEngine/Core/Agent.hpp"
-#include "InferenceEngine/AST/Private/ASTPrinter.hpp"
-
-void RunTT(const ie::ClauseFinder& c, const ie::SymbolFinder& s);
+#include <InferenceEngine/Core/IEngine.hpp>
+#include <InferenceEngine/AST/Private/ASTPrinter.hpp>
 
 int main(int argc, char** argv)
 {
+    ie::CLIParser cli("IEngine", "Infers truths from a horn clause knowledge base");
+    cli.add_positional(ie::CLIArgument("method", "The method to use when "
+        "inferring the given ASK statement"));
+    cli.add_positional(ie::CLIArgument("filename", "The name of the file "
+        "(relative to the current working directory) where the knowledge base "
+        "file is located"));
+    cli.parse(argc, argv);
 
-    auto path = sky::Path(sky::Path::bin_path(argv));
-    path.append("../Tests/test5.txt");
+    auto file = cli.get_positional_result("filename");
+    auto method = cli.get_positional_result("method");
 
-    ie::Parser parser;
-    auto contents = parser.preprocess(path);
-    parser.parse(contents.tell);
-
-    ie::ClauseFinder clause;
-    ie::SymbolFinder sFind;
-
-    for(auto& a: parser.ast()){
-        a->accept(clause);
-    }
-    for(auto& a: parser.ast()){
-        a->accept(sFind);
-    }
-
-
-    for(auto& str : sFind.get_symbols()){
-        std::cout << str << " " << std::endl;
-    }
-
-    //RunTT(clause, sFind);
+    ie::IEngine engine;
+    engine.infer(method, sky::Path(file));
 
     return 0;
+
+//    auto path = sky::Path(sky::Path::bin_path(argv));
+//    path.append("../Tests/test5.txt");
+//
+//    ie::Parser parser;
+//    auto contents = parser.preprocess(path);
+//    parser.parse(contents.tell);
+//
+//    ie::ClauseFinder clause;
+//    ie::SymbolFinder sFind;
+//
+//    for(auto& a: parser.ast()){
+//        a->accept(clause);
+//    }
+//    for(auto& a: parser.ast()){
+//        a->accept(sFind);
+//    }
+//
+//
+//    for(auto& str : sFind.get_symbols()){
+//        std::cout << str << " " << std::endl;
+//    }
+//
+//    //RunTT(clause, sFind);
+//
+//    return 0;
 }
 
 

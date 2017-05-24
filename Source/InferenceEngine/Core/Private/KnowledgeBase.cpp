@@ -9,8 +9,12 @@
 //  Copyright (c) 2016 Jacob Milligan. All rights reserved.
 //
 
-#include "InferenceEngine/AST/ClauseFinder.hpp"
+#include "InferenceEngine/TT/TruthTable.hpp"
+#include "InferenceEngine/FC/ForwardChaining.hpp"
 #include "InferenceEngine/Core/KnowledgeBase.hpp"
+
+#include <algorithm>
+#include <InferenceEngine/BC/BC.hpp>
 
 namespace ie {
 
@@ -42,6 +46,66 @@ void KnowledgeBase::tell(const std::vector<ASTNode::Child>& ast)
         if ( symbols_.find(s) == symbols_.end() ) {
             symbols_[s] = false;
         }
+    }
+}
+
+std::string join(const std::vector<std::string>& strings, const std::string& delimiter)
+{
+    std::string result = "";
+    for ( int i = 0; i < strings.size() - 1; ++i ) {
+        result += strings[i];
+        result += delimiter;
+    }
+    result += strings.back();
+
+    return result;
+}
+
+void KnowledgeBase::ask(const InferenceMethod method, const Symbol& q)
+{
+    switch (method) {
+        case InferenceMethod::TT:
+        {
+            TruthTable tt;
+            auto response = tt.ask(*this, q);
+
+            if ( response.result ) {
+                std::cout << "YES: " << response.models_inferred << std::endl;
+            } else {
+                std::cout << "No";
+            }
+        } break;
+        case InferenceMethod::FC:
+        {
+            FC fc;
+            auto response = fc.fc_entails(*this, q);
+            if ( response.value ) {
+                std::cout << "YES: " << join(response.path, ", ");
+            } else {
+                std::cout << "NO";
+            }
+            std::cout << std::endl;
+        } break;
+        case InferenceMethod::BC:
+        {
+            BC bc;
+            std::vector<const ComplexSentence*> rules;
+            for ( auto& r : rules_ ) {
+                rules.push_back(r.second);
+            }
+            std::map<std::string, bool> facts;
+            for ( auto& f : facts_ ) {
+                facts.emplace(f.first, true);
+            }
+            auto response = bc.bc_entails(rules, q.GetSymbolName(), facts);
+            if ( response ) {
+                std::cout << "YES: ";
+            } else {
+                std::cout << "NO";
+            }
+        } break;
+        default:
+            std::cout << "IEngine: Invalid ASK statement" << std::endl;
     }
 }
 
