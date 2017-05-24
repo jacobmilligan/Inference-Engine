@@ -72,7 +72,7 @@ void KnowledgeBase::ask(const InferenceMethod method, const Symbol& q)
             if ( response.result ) {
                 std::cout << "YES: " << response.models_inferred << std::endl;
             } else {
-                std::cout << "No";
+                std::cout << "NO";
             }
         } break;
         case InferenceMethod::FC:
