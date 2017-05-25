@@ -22,9 +22,9 @@ namespace ie {
 
         Symbol(std::string s, bool val) : symbolName_ (s), value_(val) {};
 
-        bool GetValue();
+        bool GetValue() const;
 
-        std::string GetSymbolName();
+        std::string GetSymbolName() const;
 
         void SetValue(bool val);
     };

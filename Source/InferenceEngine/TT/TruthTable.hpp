@@ -2,58 +2,60 @@
 // Created by mac on 5/05/17.
 //
 
-#ifndef PROJECT_TRUTHTABLE_HPP
-#define PROJECT_TRUTHTABLE_HPP
+#pragma once
+
+#include "InferenceEngine/AST/ClauseFinder.hpp"
+#include "InferenceEngine/Core/KnowledgeBase.hpp"
+#include "InferenceEngine/Core/Symbol.hpp"
+#include "Model.hpp"
 
 #include <vector>
-#include <InferenceEngine/AST/ClauseFinder.hpp>
-#include <InferenceEngine/Core/Response.hpp>
-#include "InferenceEngine/AST/SymbolFinder.hpp"
-#include "InferenceEngine/Core/Symbol.hpp"
-#include "InferenceEngine/TT/TruthTable.hpp"
+#include <unordered_map>
 
 namespace ie {
 
-using matrix = std::vector <std::vector<Symbol *>>;
+/// @brief Response is a response from a truth tables ASK method containing
+/// the result and number of models inferred in the truth table as true
+class Response {
+public:
+    bool result = false;
+    int models_inferred = 0;
+    Response(int mods, bool res)
+        : models_inferred(mods), result(res)
+    {};
+};
 
+/// @brief TruthTable encapsulates the model enumeration inference method that
+/// builds a truth table, inferring the number of rows in which a particular
+/// question, alpha, satisfies the knowledge base
 class TruthTable {
 private:
+    int models_; ///< number of models inferred so far
 
-    std::vector<const Sentence*> rules_;
-
-    //symbols_ list following construction of truth table
-    std::vector<Symbol*> symbolList_;
-
-    //Truth table matrix itself - containing models(rows) of symbols
-    matrix matrixModals_;
-
-    //Constructs entire truth table given symbols and rules
-    void construct_truth_table_recursive(std::vector<Symbol *> symbols,
-                                         matrix& tempMatrix, std::vector<Symbol *> partialModelVal, double modalSize);
-
-    std::map<std::string, bool> ConvertToMap(std::vector<Symbol*> symbolList);
-
-
-    bool modal_match(const std::vector<Symbol *> row, const std::vector<Symbol *> askModal);
-
-    //Checks if a symbol is in our symbol list
-    bool ask_symbols_match(const std::vector<Symbol *> modal);
+    /// @brief Builds a truth table and enumerates all models recursively.
+    /// For reference, see pp. 248 of Artificial Intelligence: A Modern Approach
+    /// @param kb The knowledge base to check
+    /// @param alpha The symbol to check for
+    /// @param symbols The valid symbols in the current iteration
+    /// @param model The current partial model
+    /// @return True if alpha is valid, false otherwise
+    bool tt_check_all(const KnowledgeBase& kb, const Symbol& alpha,
+                          std::unordered_map<std::string, bool> symbols,
+                          const Model& model);
 
 public:
+    /// @brief Initializes the truth table with zero models inferred
+    TruthTable()
+        : models_(0)
+    {}
 
-    //Constructor to truth table:
-    //Truth table is calculated within the constructor
-    TruthTable(const ie::SymbolFinder& symFind, std::vector<const Sentence*> kb_rules);
-
-    //Return copy of truth table
-    matrix GetTruthTableMatrix();
-
-    //Return copy of symbols used in truth table
-    std::vector<Symbol *> GetSymbolsList();
-
-    Response ask(const std::vector<Symbol *> symbolList);
-
-
+    /// @brief Asks whether a given symbol is true in the knowledge base using
+    /// the model enumeration method to build a truth table, returning the
+    /// number of models in which alpha is true and the result
+    /// @param kb The knowledge base to ask
+    /// @param alpha The symbol to ask
+    /// @return True if alpha is valid in KB, false otherwise
+    Response ask(const KnowledgeBase& kb, const Symbol& alpha);
 };
+
 }
-#endif //PROJECT_TRUTHTABLE_HPP

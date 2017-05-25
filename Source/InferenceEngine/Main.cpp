@@ -1,4 +1,4 @@
-#include "InferenceEngine/Parsing/Parser.hpp"
+#include <InferenceEngine/Parsing/CLIParser.hpp>
 #include <Path/Path.hpp>
 
 //For testing atm (cc)
@@ -8,15 +8,24 @@
 #include <InferenceEngine/AST/ClauseFinder.hpp>
 #include <InferenceEngine/AST/SymbolFinder.hpp>
 #include <InferenceEngine/BC/BackwardChaining.hpp>
-#include "InferenceEngine/Core/Agent.hpp"
 #include "InferenceEngine/AST/Private/ASTPrinter.hpp"
 
-void RunTT(const ie::ClauseFinder& c, const ie::SymbolFinder& s);
+#include <InferenceEngine/Core/IEngine.hpp>
+#include <InferenceEngine/AST/Private/ASTPrinter.hpp>
+
 
 void run_bc(sky::Path path);
 
 int main(int argc, char** argv)
 {
+    ie::CLIParser cli(sky::Path(argv[0]).filename(),
+                      "Infers truths from a horn clause knowledge base");
+    cli.add_positional(ie::CLIArgument("method", "The method to use when "
+        "inferring the given ASK statement"));
+    cli.add_positional(ie::CLIArgument("filename", "The name of the file "
+        "(relative to the current working directory) where the knowledge base "
+        "file is located"));
+    cli.parse(argc, argv);
 
     auto path = sky::Path(sky::Path::bin_path(argv));
     path.append("../Tests/test6.txt");
@@ -74,76 +83,4 @@ void run_bc(sky::Path path){
     if(res != ""){
         std::cout << res << std::endl;
     }
-}
-
-
-void RunTT(const ie::ClauseFinder& c, const ie::SymbolFinder& symFind){
-
-
-    //Just all the possible symbols from world i.e. "P" "G" "W" "WT" "P1"
-    std::vector<ie::Symbol*> observations = std::vector<ie::Symbol*>();
-
-    //The rules for the world i.e. "P => Q", "W => Q", "^Z => R"
-    //symbols_ will also have to be operators too
-//    std::vector<ie::Symbol*> rules = std::vector<ie::Symbol*>();
-
-
-    //Setup a small modal to check against - with 10 true and 1 false
-    for(auto& str : symFind.get_symbols()){
-        ie::Symbol* s = new ie::Symbol(str, true);
-        observations.push_back(s);
-    }
-
-    std:: cout << "Telling: " << std::endl;
-
-    for(auto& a : observations){
-        std::cout << a->GetSymbolName() << " - " << a->GetValue() << std::endl;
-    }
-    std::cout << std::endl;
-
-
-    ie::ASTPrinter printer;
-
-    for(auto& rule : c.rules()){
-        std::cout << "rule - ";
-        rule->accept(printer);
-        std::cout << std::endl;
-    }
-
-    std::cout << std::endl;
-    std::cout << "Size of tree: " << pow(2, observations.size()) << std::endl;
-
-    //ie::TruthTable tt = ie::TruthTable(observations, c.rules());
-
-
-    //ie::Agent agent = ie::Agent();
-
-    std::vector<ie::Symbol*> ask = std::vector<ie::Symbol*>();
-    ask.push_back(new ie::Symbol("p", false));
-    ask.push_back(new ie::Symbol("z", true));
-    std:: cout << "Asking for: " << std::endl;
-    for(auto& a : ask){
-        std::cout << a->GetSymbolName() << " - " << a->GetValue() << std::endl;
-    }
-    std::cout << std::endl;
-
-
-    //Response res = tt.ask(ask);
-
-
-    //No rules at the moment
-    std::vector<ie::Symbol*> emptyRules = std::vector<ie::Symbol*>();
-
-    //Pass in a.) What we want to know i.e. is this list or symbol true?
-    //        b.) Observations -> which is the symbols that are given to us
-    //        c.) rules or predicates that we must calculate i.e. P => Q
-
-
-    clock_t t;    t = clock();
-    //Response res = agent.TTentails(ask, observations, emptyRules, tt.GetTruthTableMatrix());
-    t = clock() - t;
-    printf ("It took %lu clicks (%f seconds).\n",t,((float)t)/CLOCKS_PER_SEC);
-
-   // std::cout << "Infered? " << (res.Result ? "true" : "false") << " , " << "Models infered: " << res.ModalsInfered << std::endl;
-
 }

@@ -25,34 +25,24 @@ CLIParser::CLIParser(const std::string& app_name, const char* description)
 
 void CLIParser::parse(int argc, char** argv)
 {
-    auto help_flag = false;
-    std::string error = "";
-
     for ( int i = 1; i < argc; ++i ) {
         if ( strcmp(argv[i], "-h") == 0 || strcmp(argv[i], "--help") == 0 ) {
-           help_flag = true;
-           break;
+            print_help();
+            exit(0);
         }
 
-        if ( i - 1 < args_.size() ) {
+        if ( i - 1 < args_.size() )
             args_[i - 1].value = argv[i];
-        } else {
-            error = "Incorrect number of arguments. Expected ";
-            for ( auto& arg : args_ ) {
-                error += "<" + arg.name + "> ";
-            }
-            break;
+    }
+
+    if ( argc - 1 < args_.size() ) {
+        std::string error = "Incorrect number of arguments.\nExpected ";
+        for ( auto& arg : args_ ) {
+            error += "<" + arg.name + "> ";
         }
-    }
-
-    if ( help_flag ) {
-        print_help();
-        reset();
-    }
-
-    if ( error.size() > 0 ) {
+        error.pop_back();
         print_error(error);
-        reset();
+        exit(0);
     }
 }
 
@@ -103,7 +93,7 @@ std::string CLIParser::help_string()
 void CLIParser::print_error(const std::string& err)
 {
     std::cout << app_name_ << ": " << err << ". See '"
-              << app_name_ << "--help'" << std::endl;
+              << app_name_ << " --help'" << std::endl;
 }
 
 

@@ -23,8 +23,11 @@ namespace ie {
 PreprocessingResult Parser::preprocess(const sky::Path& filepath)
 {
     auto contents = slurp(filepath.str());
-    if ( contents.size() <= 0 )
-        throw std::length_error("File is empty or does not exist at that path");
+    if ( contents.size() <= 0 ) {
+        std::string errstr = "file '" + filepath.filename()
+                             + "' is empty or does not exist at that path";
+        return PreprocessingResult("ERROR", errstr);
+    }
 
     contents.erase(std::remove(contents.begin(), contents.end(), '\r'),
                    contents.end());
@@ -47,6 +50,7 @@ PreprocessingResult Parser::preprocess(const sky::Path& filepath)
 
 void Parser::parse(const std::string& str)
 {
+    ast_.clear();
     Lexer lexer;
     lexer.lex(str);
 

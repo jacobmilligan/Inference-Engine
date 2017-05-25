@@ -1,1 +1,2 @@
-add_sources(Private/TruthTable.cpp)
+add_sources(Private/TruthTable.cpp
+        Private/Model.cpp)

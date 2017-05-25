@@ -31,75 +31,42 @@ TEST_CASE("calc single negation and false symbols", "[operators]")
     ie::Parser parser;
     parser.parse(rules);
 
-    ie::ClauseFinder clause;
-    ie::SymbolFinder symFind;
-
-    for(auto& a: parser.ast()){
-        a->accept(symFind);
-        a->accept(clause);
-    }
+    ie::KnowledgeBase kb;
+    kb.tell(parser.ast());
 
     SECTION("world with p = true doesn't exist"){
-        std::vector<ie::Symbol*> observations = std::vector<ie::Symbol*>();
-        ie::TruthTable tt = ie::TruthTable(symFind, clause.rules());
-
-
-        std::vector<ie::Symbol*> _asks;
-
+        ie::TruthTable tt;
         ///Asking if p exists when !p already knowledge
-        std::vector<ie::Symbol*> ask = std::vector<ie::Symbol*>();
-        ask.push_back(new ie::Symbol("p", true));
+        auto res = tt.ask(kb, ie::Symbol("p", true));
 
-        Response res = tt.ask(ask);
-
-        REQUIRE(!res.Result);
+        REQUIRE(!res.result);
     }
 
     SECTION("world with z  doesn't exist"){
-        std::vector<ie::Symbol*> observations = std::vector<ie::Symbol*>();
-        ie::TruthTable tt = ie::TruthTable(symFind, clause.rules());
-
-
-        std::vector<ie::Symbol*> _asks;
-        std::vector<ie::Symbol*> ask = std::vector<ie::Symbol*>();
-        ask.push_back(new ie::Symbol("z", true));
-
-        Response res = tt.ask(ask);
-
-        REQUIRE(!res.Result);
+        ie::TruthTable tt;
+        ///Asking if p exists when !p already knowledge
+        auto res = tt.ask(kb, ie::Symbol("z", true));
+        REQUIRE(!res.result);
     }
 }
 
 
-TEST_CASE("calc test dysjunction", "[operators]")
+TEST_CASE("calc test disunction", "[operators]")
 {
-    std::string rules = "p | q;";
+    std::string rules = "p | q;p";
 
     ie::Parser parser;
     parser.parse(rules);
 
-    ie::ClauseFinder clause;
-    ie::SymbolFinder symFind;
-
-    for(auto& a: parser.ast()){
-        a->accept(symFind);
-        a->accept(clause);
-    }
-
-    std::vector<ie::Symbol*> observations = std::vector<ie::Symbol*>();
-    ie::TruthTable tt = ie::TruthTable(symFind, clause.rules());
-
-
-    std::vector<ie::Symbol*> _asks;
+    ie::KnowledgeBase kb;
+    kb.tell(parser.ast());
 
     ///Asking if p exists when !p already knowledge
-    std::vector<ie::Symbol*> ask = std::vector<ie::Symbol*>();
-    ask.push_back(new ie::Symbol("q", true));
-//  ask.push_back(new ie::Symbol("z", true));
 
-    Response res = tt.ask(ask);
+    ie::TruthTable tt;
+    auto res = tt.ask(kb, ie::Symbol("p", true));
 
-    REQUIRE(res.Result);
+    REQUIRE(res.result);
 }
 
 TEST_CASE("calc test conjunction", "[operators]")
@@ -109,46 +76,13 @@ TEST_CASE("calc test conjunction", "[operators]")
     ie::Parser parser;
     parser.parse(rules);
 
-    ie::ClauseFinder clause;
-    ie::SymbolFinder symFind;
-
-    for(auto& a: parser.ast()){
-        a->accept(symFind);
-        a->accept(clause);
-    }
+    ie::KnowledgeBase kb;
+    kb.tell(parser.ast());
 
     //Can exist as we have a possible world where this could be
-    SECTION("world where q is true"){
-        std::vector<ie::Symbol*> observations = std::vector<ie::Symbol*>();
-        ie::TruthTable tt = ie::TruthTable(symFind, clause.rules());
-
-
-        std::vector<ie::Symbol*> _asks;
-
-        ///Asking if p exists when !p already knowledge
-        std::vector<ie::Symbol*> ask = std::vector<ie::Symbol*>();
-        ask.push_back(new ie::Symbol("q", true));
-//  ask.push_back(new ie::Symbol("z", true));
-
-        Response res = tt.ask(ask);
-        REQUIRE(res.Result);
-    }
-    //Can exist as we have a possible world where this could be
-    SECTION("world where p is true"){
-        std::vector<ie::Symbol*> observations = std::vector<ie::Symbol*>();
-        ie::TruthTable tt = ie::TruthTable(symFind, clause.rules());
-
-
-        std::vector<ie::Symbol*> _asks;
-
-        ///Asking if p exists when !p already knowledge
-        std::vector<ie::Symbol*> ask = std::vector<ie::Symbol*>();
-        ask.push_back(new ie::Symbol("p", true));
-//  ask.push_back(new ie::Symbol("z", true));
-
-        Response res = tt.ask(ask);
-        REQUIRE(res.Result);
-    }
+    ie::TruthTable tt;
+    auto res = tt.ask(kb, ie::Symbol("p", true));
+    REQUIRE(res.result);
 }
 
 TEST_CASE("calc test conjunction 2", "[operators]")
@@ -159,61 +93,32 @@ TEST_CASE("calc test conjunction 2", "[operators]")
     ie::Parser parser;
     parser.parse(rules);
 
-    ie::ClauseFinder clause;
-    ie::SymbolFinder symFind;
-
-    for(auto& a: parser.ast()){
-        a->accept(symFind);
-        a->accept(clause);
-    }
+    ie::KnowledgeBase kb;
+    kb.tell(parser.ast());
 
     //a & p are false therefore q should be true
     SECTION("world where q is true"){
-        std::vector<ie::Symbol*> observations = std::vector<ie::Symbol*>();
-        ie::TruthTable tt = ie::TruthTable(symFind, clause.rules());
-
-
-        std::vector<ie::Symbol*> _asks;
-
-        ///Asking if p exists when !p already knowledge
-        std::vector<ie::Symbol*> ask = std::vector<ie::Symbol*>();
-        ask.push_back(new ie::Symbol("q", true));
-//  ask.push_back(new ie::Symbol("z", true));
-
-        Response res = tt.ask(ask);
-        REQUIRE(res.Result);
+        ie::TruthTable tt;
+        auto res = tt.ask(kb, ie::Symbol("q", true));
+        REQUIRE(res.result);
     }
 }
 
 TEST_CASE("calc test combinations", "[operators]")
 {
-    std::string rules = "p => q; a => p; !a";
+    std::string rules = "p => q; a => p; !a; p";
 
     ie::Parser parser;
     parser.parse(rules);
 
-    ie::ClauseFinder clause;
-    ie::SymbolFinder symFind;
+    ie::KnowledgeBase kb;
+    kb.tell(parser.ast());
 
-    for(auto& a: parser.ast()){
-        a->accept(symFind);
-        a->accept(clause);
-    }
-
-    // !a inmplies truth in all implications
+    // !a implies truth in implications
     SECTION("world where q is true"){
-        std::vector<ie::Symbol*> observations = std::vector<ie::Symbol*>();
-        ie::TruthTable tt = ie::TruthTable(symFind, clause.rules());
-
-
-        std::vector<ie::Symbol*> _asks;
-
-        ///Asking if p exists when !p already knowledge
-        std::vector<ie::Symbol*> ask = std::vector<ie::Symbol*>();
-        ask.push_back(new ie::Symbol("q", true));
-
-        Response res = tt.ask(ask);
-        REQUIRE(res.Result);
+        ie::TruthTable tt;
+        auto res = tt.ask(kb, ie::Symbol("q", true));
+        REQUIRE(res.result);
     }
 }
 
@@ -225,44 +130,21 @@ TEST_CASE("calc test combinations 2", "[operators]")
     ie::Parser parser;
     parser.parse(rules);
 
-    ie::ClauseFinder clause;
-    ie::SymbolFinder symFind;
-
-    for(auto& a: parser.ast()){
-        a->accept(symFind);
-        a->accept(clause);
-    }
+    ie::KnowledgeBase kb;
+    kb.tell(parser.ast());
 
     // !c implies that we cannot say if either a or b are true
     SECTION("world where a is false"){
-        std::vector<ie::Symbol*> observations = std::vector<ie::Symbol*>();
-        ie::TruthTable tt = ie::TruthTable(symFind, clause.rules());
-
-
-        std::vector<ie::Symbol*> _asks;
-
-        ///Asking if p exists when !p already knowledge
-        std::vector<ie::Symbol*> ask = std::vector<ie::Symbol*>();
-        ask.push_back(new ie::Symbol("a", false));
-
-        Response res = tt.ask(ask);
-        REQUIRE(res.Result);
+        ie::TruthTable tt;
+        auto res = tt.ask(kb, ie::Symbol("a", false));
+        REQUIRE(!res.result);
     }
 
     // !c implies that we cannot say if either a or b are true
-    SECTION("world where b is true"){
-        std::vector<ie::Symbol*> observations = std::vector<ie::Symbol*>();
-        ie::TruthTable tt = ie::TruthTable(symFind, clause.rules());
-
-
-        std::vector<ie::Symbol*> _asks;
-
-        ///Asking if p exists when !p already knowledge
-        std::vector<ie::Symbol*> ask = std::vector<ie::Symbol*>();
-        ask.push_back(new ie::Symbol("b", false));
-
-        Response res = tt.ask(ask);
-        REQUIRE(res.Result);
+    SECTION("world where b is false"){
+        ie::TruthTable tt;
+        auto res = tt.ask(kb, ie::Symbol("b", false));
+        REQUIRE(!res.result);
     }
 }
 
@@ -274,28 +156,14 @@ TEST_CASE("calc test combinations 3", "[operators]")
     ie::Parser parser;
     parser.parse(rules);
 
-    ie::ClauseFinder clause;
-    ie::SymbolFinder symFind;
+    ie::KnowledgeBase kb;
+    kb.tell(parser.ast());
 
-    for(auto& a: parser.ast()){
-        a->accept(symFind);
-        a->accept(clause);
-    }
-
-    // !c implies that we cannot say if either a or b are true
+    // !a implies truth in implications
     SECTION("world where q is true"){
-        std::vector<ie::Symbol*> observations = std::vector<ie::Symbol*>();
-        ie::TruthTable tt = ie::TruthTable(symFind, clause.rules());
-
-
-        std::vector<ie::Symbol*> _asks;
-
-        ///Asking if p exists when !p already knowledge
-        std::vector<ie::Symbol*> ask = std::vector<ie::Symbol*>();
-        ask.push_back(new ie::Symbol("q", true));
-
-        Response res = tt.ask(ask);
-        REQUIRE(res.Result);
+        ie::TruthTable tt;
+        auto res = tt.ask(kb, ie::Symbol("q", true));
+        REQUIRE(res.result);
     }
 }
 
@@ -307,26 +175,15 @@ TEST_CASE("calc test combinations 4 (example case)", "[operators]")
     ie::Parser parser;
     parser.parse(rules);
 
-    ie::ClauseFinder clause;
-    ie::SymbolFinder symFind;
+    ie::KnowledgeBase kb;
+    kb.tell(parser.ast());
 
-    for(auto& a: parser.ast()){
-        a->accept(symFind);
-        a->accept(clause);
-    }
-    //ask for d - from exmaple test.txt which we know is true
+    // !a implies truth in implications
     SECTION("world where d is true"){
-        std::vector<ie::Symbol*> observations = std::vector<ie::Symbol*>();
-        ie::TruthTable tt = ie::TruthTable(symFind, clause.rules());
-
-
-        std::vector<ie::Symbol*> _asks;
-
-        std::vector<ie::Symbol*> ask = std::vector<ie::Symbol*>();
-        ask.push_back(new ie::Symbol("d", true));
-
-        Response res = tt.ask(ask);
-        REQUIRE(res.Result);
+        ie::TruthTable tt;
+        auto res = tt.ask(kb, ie::Symbol("d", true));
+        REQUIRE(res.result);
+        REQUIRE(res.models_inferred == 3);
     }
 }
 
@@ -334,32 +191,19 @@ TEST_CASE("calc test combinations 4 (example case)", "[operators]")
 TEST_CASE("calc test combinations 5 - hard case", "[operators]")
 {
 
-    std::string rules = "p7 & p15 => p3; !p3 => p1; z => e; !b&e => f; f&!g => h; p1=>d; p1&!p3 => p10; !a; b; !p2; p15; p; pp; p7; !e";
+    std::string rules = "p7 & p15 => p3; p3 => p1; z => e; !b&e => f; f&!g => h; p1=>d; p1&p3 => p10; !a; b; !p2; p15; p; pp; p7; !e";
 
     ie::Parser parser;
     parser.parse(rules);
 
-    ie::ClauseFinder clause;
-    ie::SymbolFinder symFind;
+    ie::KnowledgeBase kb;
+    kb.tell(parser.ast());
 
-    for(auto& a: parser.ast()){
-        a->accept(symFind);
-        a->accept(clause);
-    }
-
-    //long chain resulting in p10 true
+    // !a implies truth in implications
     SECTION("world where p10 is true"){
-        std::vector<ie::Symbol*> observations = std::vector<ie::Symbol*>();
-        ie::TruthTable tt = ie::TruthTable(symFind, clause.rules());
-
-
-        std::vector<ie::Symbol*> _asks;
-
-        std::vector<ie::Symbol*> ask = std::vector<ie::Symbol*>();
-        ask.push_back(new ie::Symbol("p10", true));
-
-        Response res = tt.ask(ask);
-        REQUIRE(res.Result);
+        ie::TruthTable tt;
+        auto res = tt.ask(kb, ie::Symbol("p10", true));
+        REQUIRE(res.result);
     }
 
 }
