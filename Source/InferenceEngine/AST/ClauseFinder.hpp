@@ -12,6 +12,7 @@
 #pragma once
 
 #include "InferenceEngine/AST/ASTVisitor.hpp"
+#include <stack>
 
 namespace ie {
 
