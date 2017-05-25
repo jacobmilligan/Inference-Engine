@@ -9,7 +9,6 @@
 //  Copyright (c) 2016 Jacob Milligan. All rights reserved.
 //
 
-#include <termcap.h>
 #include "InferenceEngine/Core/IEngine.hpp"
 
 namespace ie {
