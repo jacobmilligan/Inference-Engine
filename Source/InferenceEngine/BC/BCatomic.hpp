@@ -13,9 +13,11 @@
 namespace ie {
     class BCatomic{
     public:
-        BCatomic(std::vector<std::string>& symListlhs, std::stack<const TokenType> tokens) : symbol_lhs_(symListlhs), token(tokens) {}
+        BCatomic(std::vector<std::string>& symListlhs, std::stack<TokenType> tokens)
+            : symbol_lhs_(symListlhs), token(tokens)
+        {}
         std::vector<std::string> symbol_lhs_;
-        std::stack<const TokenType> token;
+        std::stack<TokenType> token;
     };
 }
 

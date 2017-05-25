@@ -11,7 +11,7 @@
 #include "InferenceEngine/AST/Private/ASTPrinter.hpp"
 
 #include <InferenceEngine/Core/IEngine.hpp>
-#include <InferenceEngine/AST/Private/ASTPrinter.hpp>
+#include <map>
 
 
 void run_bc(sky::Path path);
@@ -27,60 +27,12 @@ int main(int argc, char** argv)
         "file is located"));
     cli.parse(argc, argv);
 
-    auto path = sky::Path(sky::Path::bin_path(argv));
-    path.append("../Tests/test6.txt");
+    auto file = cli.get_positional_result("filename");
+    auto method = cli.get_positional_result("method");
 
-//    ie::Parser parser;
-//    auto contents = parser.preprocess(path);
-//    parser.parse(contents.tell);
-//
-//    ie::ClauseFinder clause;
-//    ie::SymbolFinder sFind;
-//
-//    for(auto& a: parser.ast()){
-//        a->accept(clause);
-//    }
-//    for(auto& a: parser.ast()){
-//        a->accept(sFind);
-//    }
-//
-//
-//    for(auto& str : sFind.get_symbols()){
-//        std::cout << str << " " << std::endl;
-//    }
-//
-//    //RunTT(clause, sFind);
-//
-//    return 0;
+    ie::IEngine engine;
+    engine.infer(method, sky::Path(file));
 
-    run_bc(path);
-}
+    return 0;
 
-
-void run_bc(sky::Path path){
-    ie::Parser parser;
-
-    auto pre = ie::Parser::preprocess(path);
-    parser.parse(pre.tell);
-
-    ie::BackwardChaining backChain;
-
-    std::map<std::string, bool> newMap;
-    ie::KnowledgeBase kb;
-    kb.tell(parser.ast());
-    std::vector<const ie::ComplexSentence*> rules;
-    for(auto a : kb.rules()){
-        rules.push_back(a.second);
-    }
-//    for(auto& a : parser.ast()){
-//        a->accept(clause);
-//    }
-
-    newMap.insert(std::make_pair("p2", true));
-
-    std::string res = backChain.bc_entails(rules, "d", newMap);
-
-    if(res != ""){
-        std::cout << res << std::endl;
-    }
 }
