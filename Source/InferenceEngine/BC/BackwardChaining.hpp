@@ -2,21 +2,18 @@
 // Created by mac on 12/05/17.
 //
 
-#ifndef IENGINE_BC_HPP
-#define IENGINE_BC_HPP
+#pragma once
 
 #include "InferenceEngine/Core/Symbol.hpp"
-#include "InferenceEngine/Core/KnowledgeBase.hpp"
 #include "BCatomic.hpp"
 #include "PremiseWrapper.hpp"
-//#include "PremiseWrapper.hpp"
 
 #include <vector>
 #include <queue>
-#include <unordered_map>
-#include <InferenceEngine/AST/ResolutionVisitor.hpp>
 #include <algorithm>
 #include <InferenceEngine/Parsing/Private/Lexer.hpp>
+#include <map>
+
 
 namespace ie {
 
@@ -25,10 +22,22 @@ namespace ie {
     public:
 
         ///returns result of back-chaining - returns empty str if not solvable or string of results
-        std::string bc_entails(std::vector<const ComplexSentence *> rules, const std::string goal, std::map<std::string, bool> trueSymbols);
+        bool bc_entails(std::vector<const ComplexSentence *> rules, const std::string goal, std::map<std::string, bool> trueSymbols);
+
+        inline std::vector<std::string>& path()
+        {
+            return path_;
+        }
 
     private:
 
+        bool check_to_add(std::string a, std::map<std::string, bool> trueSymbols);
+
+        std::string goal_string_;
+
+        bool true_symbols_contain_goal(std::map<std::string, bool>& trueSymbols);
+
+        std::vector<std::string> path_;
         ///concatanation of solving results
         std::string outputRes = "";
 
@@ -60,5 +69,3 @@ namespace ie {
 
 
 }
-
-#endif //IENGINE_BC_HPP

@@ -15,6 +15,7 @@
 
 #include <algorithm>
 #include <InferenceEngine/BC/BackwardChaining.hpp>
+#include <map>
 
 namespace ie {
 
@@ -98,11 +99,11 @@ void KnowledgeBase::ask(const InferenceMethod method, const Symbol& q)
                 facts.emplace(f.first, true);
             }
             auto response = bc.bc_entails(rules, q.GetSymbolName(), facts);
-//            if ( response ) {
-//                std::cout << "YES: ";
-//            } else {
-//                std::cout << "NO";
-//            }
+            if ( response ) {
+                std::cout << "YES: " << join(bc.path(), ", ");
+            } else {
+                std::cout << "NO";
+            }
         } break;
         default:
             std::cout << "IEngine: Invalid ASK statement" << std::endl;

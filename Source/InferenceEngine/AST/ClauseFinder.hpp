@@ -11,7 +11,6 @@
 
 #pragma once
 
-#include <stack>
 #include "InferenceEngine/AST/ASTVisitor.hpp"
 #include <stack>
 
@@ -49,13 +48,13 @@ public:
     void clear();
 
 
-    const std::stack<const TokenType> connectives() const;
+    const std::stack<TokenType> connectives() const;
 
 private:
     std::vector<const ComplexSentence*> rules_;
     std::vector<const AtomicSentence*> facts_;
     std::vector<std::string> atomics_;
-    std::stack<const TokenType> connectives_;
+    std::stack<TokenType> connectives_;
     std::vector<std::string> positive_atomics_;
 
 };
