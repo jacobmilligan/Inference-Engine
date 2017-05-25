@@ -15,7 +15,6 @@
 #include "InferenceEngine/Core/KnowledgeBase.hpp"
 
 #include <algorithm>
-#include <InferenceEngine/AST/SymbolFinder.hpp>
 
 namespace ie {
 

@@ -1,20 +1,12 @@
 #include <InferenceEngine/Parsing/CLIParser.hpp>
 #include <Path/Path.hpp>
 
-//For testing atm (cc)
-#include <iostream>
-#include <cmath>
 #include <InferenceEngine/AST/ResolutionVisitor.hpp>
-#include <InferenceEngine/AST/ClauseFinder.hpp>
-#include <InferenceEngine/AST/SymbolFinder.hpp>
 #include <InferenceEngine/BC/BackwardChaining.hpp>
 #include "InferenceEngine/AST/Private/ASTPrinter.hpp"
 
 #include <InferenceEngine/Core/IEngine.hpp>
-#include <map>
 
-
-void run_bc(sky::Path path);
 
 int main(int argc, char** argv)
 {
