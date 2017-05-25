@@ -17,7 +17,6 @@
 #include <InferenceEngine/AST/ResolutionVisitor.hpp>
 #include <algorithm>
 #include <InferenceEngine/Parsing/Private/Lexer.hpp>
-#include <InferenceEngine/BC/BackwardChaining.hpp>
 
 namespace ie {
 
