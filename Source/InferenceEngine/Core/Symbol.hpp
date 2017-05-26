@@ -1,9 +1,17 @@
 //
-// Created by mac on 5/05/17.
+//  Symbol.hpp
+//  iengine
+//
+//  --------------------------------------------------------------
+//
+//  Authors:       Jacob Milligan & Cormac Collins
+//  Student ID:    100660682 & 100655400
+//  Unit:          COS30019 - Introduction To AI
+//  Program:       Assignment 2 - Inference Engine
+//  Date:          05/05/2017
 //
 
-#ifndef PROJECT_SYMBOL_HPP
-#define PROJECT_SYMBOL_HPP
+#pragma once
 
 #include <string>
 
@@ -29,6 +37,3 @@ namespace ie {
         void SetValue(bool val);
     };
 }
-
-
-#endif //PROJECT_SYMBOL_HPP

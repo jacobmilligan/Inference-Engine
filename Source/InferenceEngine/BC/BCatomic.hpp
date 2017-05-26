@@ -1,12 +1,20 @@
 //
-// Created by mac on 24/05/17.
+//  BCAtomic.hpp
+//  iengine
+//
+//  --------------------------------------------------------------
+//
+//  Authors:       Jacob Milligan & Cormac Collins
+//  Student ID:    100660682 & 100655400
+//  Unit:          COS30019 - Introduction To AI
+//  Program:       Assignment 2 - Inference Engine
+//  Date:          24/05/2017
 //
 
-#include <InferenceEngine/Core/Symbol.hpp>
-#include <InferenceEngine/Parsing/Private/Lexer.hpp>
+#include "InferenceEngine/Core/Symbol.hpp"
 
-#ifndef IENGINE_BCATOMIC_HPP
-#define IENGINE_BCATOMIC_HPP
+#pragma once
+
 /// -----------------------------------------------------------
 ///container for lhs atomic values and tokens during BC search
 // ------------------------------------------------------------
@@ -20,6 +28,3 @@ namespace ie {
         std::stack<TokenType> token;
     };
 }
-
-
-#endif //IENGINE_BCATOMIC_HPP

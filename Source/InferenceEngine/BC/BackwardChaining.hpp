@@ -1,19 +1,24 @@
 //
-// Created by mac on 12/05/17.
+//  BackwardChaining.hpp
+//  iengine
+//
+//  --------------------------------------------------------------
+//
+//  Authors:       Jacob Milligan & Cormac Collins
+//  Student ID:    100660682 & 100655400
+//  Unit:          COS30019 - Introduction To AI
+//  Program:       Assignment 2 - Inference Engine
+//  Date:          12/05/2017
 //
 
 #pragma once
 
 #include "InferenceEngine/Core/Symbol.hpp"
-#include "BCatomic.hpp"
-#include "PremiseWrapper.hpp"
+#include "InferenceEngine/BC/BCatomic.hpp"
+#include "InferenceEngine/BC/PremiseWrapper.hpp"
 
 #include <vector>
-#include <queue>
-#include <algorithm>
-#include <InferenceEngine/Parsing/Private/Lexer.hpp>
 #include <map>
-
 
 namespace ie {
 

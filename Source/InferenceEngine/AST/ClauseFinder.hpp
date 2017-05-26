@@ -4,14 +4,17 @@
 //
 //  --------------------------------------------------------------
 //
-//  Created by
-//  Jacob Milligan on 5/05/2017
-//  Copyright (c) 2016 Jacob Milligan. All rights reserved.
+//  Authors:       Jacob Milligan & Cormac Collins
+//  Student ID:    100660682 & 100655400
+//  Unit:          COS30019 - Introduction To AI
+//  Program:       Assignment 2 - Inference Engine
+//  Date:          05/05/2017
 //
 
 #pragma once
 
 #include "InferenceEngine/AST/ASTVisitor.hpp"
+
 #include <stack>
 
 namespace ie {

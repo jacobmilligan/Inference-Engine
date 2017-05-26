@@ -4,9 +4,11 @@
 //
 //  --------------------------------------------------------------
 //
-//  Created by
-//  Jacob Milligan on 12/05/2017
-//  Copyright (c) 2016 Jacob Milligan. All rights reserved.
+//  Authors:       Jacob Milligan & Cormac Collins
+//  Student ID:    100660682 & 100655400
+//  Unit:          COS30019 - Introduction To AI
+//  Program:       Assignment 2 - Inference Engine
+//  Date:          12/05/2017
 //
 
 #pragma once
@@ -16,7 +18,6 @@
 
 #include <vector>
 #include <queue>
-#include <tuple>
 #include <unordered_map>
 
 namespace ie {

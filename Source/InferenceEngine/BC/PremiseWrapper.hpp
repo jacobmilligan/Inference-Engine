@@ -1,12 +1,20 @@
 //
-// Created by mac on 24/05/17.
+//  BackwardChaining.hpp
+//  iengine
+//
+//  --------------------------------------------------------------
+//
+//  Authors:       Jacob Milligan & Cormac Collins
+//  Student ID:    100660682 & 100655400
+//  Unit:          COS30019 - Introduction To AI
+//  Program:       Assignment 2 - Inference Engine
+//  Date:          24/05/2017
 //
 
-#ifndef IENGINE_PREMISEWRAPPER_HPP
-#define IENGINE_PREMISEWRAPPER_HPP
+#pragma once
 
-#include <InferenceEngine/Core/Symbol.hpp>
-#include "BCatomic.hpp"
+#include "InferenceEngine/Core/Symbol.hpp"
+#include "InferenceEngine/BC/BCatomic.hpp"
 
 /// -----------------------------------------------------------
 /// Wrapper for entire premise both lhs and rhs ---------------
@@ -20,5 +28,3 @@ namespace ie {
     };
 
 }
-
-#endif //IENGINE_PREMISEWRAPPER_HPP

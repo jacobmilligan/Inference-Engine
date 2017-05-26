@@ -4,20 +4,21 @@
 //
 //  --------------------------------------------------------------
 //
-//  Created by
-//  Jacob Milligan on 30/04/2017
-//  Copyright (c) 2016 Jacob Milligan. All rights reserved.
+//  Authors:       Jacob Milligan & Cormac Collins
+//  Student ID:    100660682 & 100655400
+//  Unit:          COS30019 - Introduction To AI
+//  Program:       Assignment 2 - Inference Engine
+//  Date:          30/04/2017
 //
 
 #pragma once
 
 #include "InferenceEngine/AST/ASTVisitor.hpp"
+#include "InferenceEngine/Core/KnowledgeBase.hpp"
+#include "InferenceEngine/Core/Symbol.hpp"
 
 #include <vector>
-#include <InferenceEngine/Core/Symbol.hpp>
-#include <queue>
 #include <unordered_map>
-#include <InferenceEngine/Core/KnowledgeBase.hpp>
 
 namespace ie {
 
