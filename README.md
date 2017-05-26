@@ -1,20 +1,24 @@
 # Readme.md
--------------------------
-##Student Details:
-__Cormac Collins__ - __Id__: 100655400
-__Jacob Milligin__   - __Id__:  100660682
-__Group Number__ : COS30019_A02_T036
----------------------------------
-##Features/Bugs/Missing:
+
+--
+
+## Student Details:
+
+**Cormac Collins** - **Id**: 100655400
+
+**Jacob Milligan**   - **Id**:  100660682
+
+**Group Number** : COS30019\_A02\_T036
+
+## Features/Bugs/Missing:
  
- Testing framework used for research. Called from command line will output results to terminal and also place in the results folder in the *inference.csv* and *time.csv* files.
+Testing framework used for research. Called from command line will output results to terminal and also place in the results folder in the *inference.csv* and *time.csv* files.
  
-```python 
-	tester.py <filename> <test-number>
+```bash
+$ tester.py <filename> <test-number>
 ```
 
---------------------------------------------
-##Test cases:
+## Test cases:
 For each individual portion - significant unit testing was implemented with specific edge cases used for each.
 
 See the *Tests* folder for the full range of unit testing.
@@ -27,21 +31,18 @@ Testing Lists include:
 	5.) *FCTests*
 	6.) *BackChainTests*
 	
-Testing files are also stored in the *Tests* folder randing from test1.txt - test19.txt
+Testing files are also stored in the *Tests* folder ranging from test1.txt - test19.txt
 
---------------------------------------------
 
 ##Acknowledgements/Resources:
 
-Jacob Visitor pattern resources?
-[http://eli.thegreenplace.net/2012/08/02/parsing-expressions-by-precedence-climbing]
+Eli Bendersky's article on precedence climbing for parsing complex expressions assisted us in developing a robust parser for propositional logic. ([http://eli.thegreenplace.net/2012/08/02/parsing-expressions-by-precedence-climbing](http://eli.thegreenplace.net/2012/08/02/parsing-expressions-by-precedence-climbing))
 
-Underlying engine components (Jacob Milligin):
-[https://github.com/jacobmilligan/Skyrocket]
+We utilised components taken from Jacob's game framework, Skyrocket, for allowing quick and simple cross-platform development between macOS and Ubuntu systems without requiring much alteration of code:
+[https://github.com/jacobmilligan/Skyrocket](https://github.com/jacobmilligan/Skyrocket)
 
-Truth Table, FC & BC resources:
-Russell, S. J, Norvig, P. (2010) *Artificial Intelligence A Modern Approach*, Third Edition, Upper Saddle River. New Jersey: Pearson Education Inc.
-------------------------------------------------------
+Russell and Norvig's *Artificial Intelligence: A Modern Approach* was used as a reference for implementing the algorithms for Truth Table, Forward Chaining, and Backward Chaining inference methods, as well as parts of the knowledge-base agent architecture **(Russell, S. J, Norvig, P. (2010) *Artificial Intelligence A Modern Approach*, Third Edition, Upper Saddle River. New Jersey: Pearson Education Inc.)**
+
 ## Notes
 
 ### CLI Operation
@@ -81,13 +82,11 @@ The app also takes an optional `-h | --help` flag for printing out a description
 ### ``/BC/``
 * ``BackwardChaining.hpp``  -Provides the implementation of the backward chaining method for solving a propositional logic query.
 
--------------------------------------------------------
+## Summary report:
 
-###Summary report:
+### Taks Distribution
 
-####Taks Distribution
-
-__Jacob Milligin__
+**Jacob Milligan**
 
 
 * System Architecture 5%
@@ -95,15 +94,23 @@ __Jacob Milligin__
 * Visitor Pattern implementation and Classes 5%
 * Forward Chaining Algorithm 10%
 
+*Total: 40%*
 
-__Cormac Collins__
+
+**Cormac Collins**
 
 * Truth Table Algorithm 20%
 * ResolutionVisitor 10%
 * BackwardChaining 10%
 
-__Joint tasks__
+*Total: 40%*
+
+**Joint tasks**
 
 * Readme.md 5%
 * Run-time research 15%
+
+*Total: 20%*
+
+**Overall Total: 100%**
 
