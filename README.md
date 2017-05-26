@@ -11,27 +11,33 @@
 **Group Number** : COS30019\_A02\_T036
 
 ## Features/Bugs/Missing:
- 
-Testing framework used for research. Called from command line will output results to terminal and also place in the results folder in the *inference.csv* and *time.csv* files.
- 
+
+### Features and Bugs 
+All features requested by the assignment specification are implemented and unit tested with none missing. At this stage our static and run-time testing was unable to turn up any bugs and all tests pass each time they're run.
+
+### Research script ``tester.py``
+The testing script we used for our research can be found at the git repository ([https://github.com/jacobmilligan/Inference-Engine](https://github.com/jacobmilligan/Inference-Engine)) under the directory ``/Tests/``. It can be called from command line using the following command: 
+
 ```bash
 $ tester.py <filename> <test-number>
 ```
 
-## Test cases:
-For each individual portion - significant unit testing was implemented with specific edge cases used for each.
+And will output results to terminal as well as placing in the ``/Tests/results/`` folder two CSV files - *inference.csv* and *time.csv*.
 
-See the *Tests* folder for the full range of unit testing.
+## Test cases:
+For each individual component of the assignment significant unit testing was utilised with many edge cases and known possible issues tested thoroughly in each test.
+
+The unit tests used can be found under the ``/Tests/`` folder for the full range of unit test files used.
 
 Testing Lists include:
 	1.) *TruthTableTests*
-	2.)* Visitor Tests*
-	3.)  *Parser Tests*
+	2.) *VisitorTests*
+	3.) *ParserTests*
 	4.) *KBTests*
 	5.) *FCTests*
 	6.) *BackChainTests*
 	
-Testing files are also stored in the *Tests* folder ranging from test1.txt - test19.txt
+Text files used are stored in the ``/Tests// folder ranging from test1.txt - test19.txt
 
 
 ##Acknowledgements/Resources:
