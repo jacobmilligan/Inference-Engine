@@ -54,9 +54,8 @@ The basic usage of the CLI application according to the assignment specification
 
 ``$ ./iengine <method> <file>``
 
-The app also takes an optional `-h | --help` flag for printing out a description of the application, its supported arguments, and other information. 
+The app also takes an optional `-h | --help` flag for printing out a description of the application, its supported arguments, and other information.
 
-
 ### Overview of Core Implementation - Found in ``/Source/InferenceEngine``
 
 ### ``/Core/``
