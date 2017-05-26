@@ -75,6 +75,7 @@ def run_tests(file, samples):
         # Run through all samples for the current inference method getting the execution
         # time and the number of inferences/models considered in the process
         for i in range(0, samples):
+            print(timer.timeit(1))
             current, (result, err) = timer.timeit(1)
             avg += current * 1000
             result = result.decode('ascii').replace(',', '').replace(':', '')
