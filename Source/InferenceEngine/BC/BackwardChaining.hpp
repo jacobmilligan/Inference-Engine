@@ -14,6 +14,7 @@
 #include <InferenceEngine/Parsing/Private/Lexer.hpp>
 #include <map>
 
+
 namespace ie {
 
 
@@ -29,6 +30,12 @@ namespace ie {
         }
 
     private:
+
+        bool check_to_add(std::string a, std::map<std::string, bool> trueSymbols);
+
+        std::string goal_string_;
+
+        bool true_symbols_contain_goal(std::map<std::string, bool>& trueSymbols);
 
         std::vector<std::string> path_;
         ///concatanation of solving results

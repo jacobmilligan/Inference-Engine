@@ -1,0 +1,4 @@
+TELL
+a|b|c|d => k1; a;
+ASK
+k1

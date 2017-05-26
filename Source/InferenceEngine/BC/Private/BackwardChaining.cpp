@@ -52,9 +52,13 @@ void BackwardChaining::fill_sentance_wrapper(std::vector<const ComplexSentence *
 ///returns result of back-chaining - returns empty str if not solvable or string of results
 bool BackwardChaining::bc_entails(std::vector<const ComplexSentence *> rules, const std::string goal,
                        std::map<std::string, bool> trueSymbols) {
+    goal_string_ = goal;
     path_.clear();
-    for(auto str : trueSymbols){
-        add_to_solution_output(str.first);
+
+    //for when KB already knows the goal in atomic truth values
+    if(true_symbols_contain_goal(trueSymbols)){
+        add_to_solution_output(goal);
+        return true;
     }
 
     //add the complex sentence rules to an easy to read wrapper
@@ -83,7 +87,7 @@ bool BackwardChaining::bc_entails(std::vector<const ComplexSentence *> rules, co
 
         bool res = get_result(goalsCopyVec, trueSymbols);
         if(res){
-            add_to_solution_output(goal);
+            //add_to_solution_output(goal);
             return true;
         }
 
@@ -132,17 +136,38 @@ void BackwardChaining::find_symbol_premise_match(std::vector<PremiseWrapper*>& p
     }
 }
 
+bool BackwardChaining::true_symbols_contain_goal(std::map<std::string, bool>& trueSymbols){
+    for(auto str : trueSymbols){
+        if(str.first == goal_string_){
+            return true;
+        }
+    }
+    return false;
+}
 
 bool BackwardChaining::get_result(std::vector<PremiseWrapper*> goalsCopy, std::map<std::string, bool>& trueSymbols){
 
     //if we have made it to a fully emptied stack of premises then we have solved it
-    if(goalsCopy.empty()){
+    if(goalsCopy.empty() || true_symbols_contain_goal(trueSymbols)){
         return true;
     }
 
     PremiseWrapper* searchPrem;
     bool searchFoundPrem = false;
+    bool solvable_by_all_dysjunctions = false;
+
     for(auto prem : goalsCopy) {
+
+        //sanity check - incase we already have this prem
+        bool willContinue = false;
+        for(auto s : trueSymbols) {
+            if (prem->rhs_ == s.first) {
+                willContinue = true;
+            }
+        }
+        if(willContinue){
+            continue;
+        }
 
         // -------------------------------------------------------------------------------------
         //Check lhs symbols of each complex & then see if we have all the symbols to solve them
@@ -157,12 +182,35 @@ bool BackwardChaining::get_result(std::vector<PremiseWrapper*> goalsCopy, std::m
             }
         }
 
+        //Special cases for all dysjunctions
+        int dysjunctionCount = 0;
+        auto tokenStack = prem->lhs_.token;
+        while (!tokenStack.empty()){
+            auto tok = tokenStack.top();
+            if(tok == TokenType::disjunction){
+                dysjunctionCount++;
+            }
+            else if(tok == TokenType::conjunction){
+                //we cannot get an early solve if there is a conjunction
+                break;
+            }
+            tokenStack.pop();
+        }
+
+        if(dysjunctionCount == prem->lhs_.token.size()
+           && count != prem->lhs_.symbol_lhs_.size()){// <- means we has at least a symbol
+            solvable_by_all_dysjunctions = true;
+        }
+
+
+
         //if we had all the symbols the count will be 0 so we can solve this for the next search!
         if (count == 0) {
             //remove from our copies list
             for(auto it = goalsCopy.begin(); it != goalsCopy.end(); it++){
                 if(*it == prem){
                     if(goalsCopy.size() == 1){
+                        goalsCopy.pop_back();
                         break;
                     }
                     else {
@@ -174,16 +222,33 @@ bool BackwardChaining::get_result(std::vector<PremiseWrapper*> goalsCopy, std::m
             searchFoundPrem = true;
             break;
         }
+        else if(count < prem->lhs_.symbol_lhs_.size() && solvable_by_all_dysjunctions){
+            searchPrem = prem;
+            searchFoundPrem = true;
+            break;
+        }
     }
 
-    //no viable search premise was found
-    if(!searchFoundPrem){
-        return false;
+    //if not special 'all dysjuncts case'
+    if(!solvable_by_all_dysjunctions) {
+        //no viable search premise was found
+        if (!searchFoundPrem) {
+            return false;
+        }
     }
 
     bool res;
     if(searchPrem->lhs_.symbol_lhs_.size() == 1){
         res = trueSymbols[searchPrem->lhs_.symbol_lhs_[0]];
+    }
+    else if(solvable_by_all_dysjunctions){
+        for(auto sym : searchPrem->lhs_.symbol_lhs_){
+            for(auto symMap : trueSymbols){
+                if(symMap.first == sym){
+                    res = symMap.second;
+                }
+            }
+        }
     }
     else {
         std::string sym1;
@@ -203,19 +268,56 @@ bool BackwardChaining::get_result(std::vector<PremiseWrapper*> goalsCopy, std::m
         }
     }
 
+    //if empty we need the LHS results we used to beginning values in the chain
+    if(path().empty()) {
+        for (auto str : searchPrem->lhs_.symbol_lhs_) {
+            for (auto it = trueSymbols.begin(); it != trueSymbols.end(); it++) {
+                if ((*it).first == str) {
+                    add_to_solution_output(str);
+                }
+            }
+
+        }
+    }
+
 
     //the result is now the value for the right hand side! which we add to the true symbols list
+    for(auto sym : searchPrem->lhs_.symbol_lhs_){
+        if(check_to_add(sym ,trueSymbols)) {
+            add_to_solution_output(sym);
+        }
+    }
+
     trueSymbols.insert(std::make_pair(searchPrem->rhs_, res));
+
+
     add_to_solution_output(searchPrem->rhs_);
 
-    //if we make it here we have solved the final complex
-    if(goalsCopy.size() == 1){
-        return true;
-    }
+
 
     return get_result(goalsCopy, trueSymbols);
 
 };
+
+bool BackwardChaining::check_to_add(std::string a, std::map<std::string, bool> trueSymbols){
+
+    //if known value then we can add to our path
+    bool addtoPath = false;
+    for(auto m : trueSymbols){
+        if(m.first == a){
+            addtoPath = true;
+        }
+    }
+
+    //if not already in path
+    for(auto sym: path()){
+        if(sym == a){
+            addtoPath = false;
+        }
+    }
+
+    return addtoPath;
+}
 
 bool BackwardChaining::calculate(TokenType logic_operator, bool lVal, bool rVal){
 
@@ -254,9 +356,11 @@ PremiseWrapper* BackwardChaining::find_rule_with_symbol(std::vector<PremiseWrapp
     for(auto* rule : rules){
         if(rule->rhs_ == searchSym){
             auto ruleCopy = rule;
-            for(auto it = rules.begin(); it != rules.end(); it++){
-                if((*it) == rule){
-                    rules.erase(it);
+            if(rules.size() > 1) {
+                for (auto it = rules.begin(); it != rules.end(); it++) {
+                    if ((*it) == rule) {
+                        rules.erase(it);
+                    }
                 }
             }
             return rule;
