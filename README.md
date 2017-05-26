@@ -1,7 +1,5 @@
 # Readme.md
 
---
-
 ## Student Details:
 
 **Cormac Collins** - **Id**: 100655400
@@ -30,17 +28,17 @@ For each individual component of the assignment significant unit testing was uti
 The unit tests used can be found under the ``/Tests/`` folder for the full range of unit test files used.
 
 Testing Lists include:
-	1.) *TruthTableTests*
-	2.) *VisitorTests*
-	3.) *ParserTests*
-	4.) *KBTests*
-	5.) *FCTests*
-	6.) *BackChainTests*
+
+1. *TruthTableTests*
+2. *VisitorTests*
+3. *ParserTests*
+4. *KBTests*
+5. *FCTests*
+6. *BackChainTests*
 	
-Text files used are stored in the ``/Tests// folder ranging from test1.txt - test19.txt
+Text files used are stored in the ``/Tests/`` folder ranging from test1.txt - test19.txt
 
-
-##Acknowledgements/Resources:
+## Acknowledgements/Resources:
 
 Eli Bendersky's article on precedence climbing for parsing complex expressions assisted us in developing a robust parser for propositional logic. ([http://eli.thegreenplace.net/2012/08/02/parsing-expressions-by-precedence-climbing](http://eli.thegreenplace.net/2012/08/02/parsing-expressions-by-precedence-climbing))
 
@@ -58,7 +56,7 @@ The basic usage of the CLI application according to the assignment specification
 ``$ ./iengine <method> <file>``
 
 The app also takes an optional `-h | --help` flag for printing out a description of the application, its supported arguments, and other information.
-
+
 ### Overview of Core Implementation - Found in ``/Source/InferenceEngine``
 
 ### ``/Core/``
