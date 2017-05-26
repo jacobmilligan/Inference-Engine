@@ -106,6 +106,7 @@ void KnowledgeBase::ask(const InferenceMethod method, const Symbol& q)
             } else {
                 std::cout << "NO";
             }
+            std::cout << std::endl;
         } break;
         default:
             std::cout << "IEngine: Invalid ASK statement" << std::endl;
