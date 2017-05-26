@@ -1,14 +1,15 @@
 # Readme.md
 
-## Student Details:
+## Programmer Details:
 
-**Cormac Collins** - **Id**: 100655400
+**Cormac Collins** 
 
-**Jacob Milligan**   - **Id**:  100660682
+**Jacob Milligan**
 
-**Group Number** : COS30019\_A02\_T036
 
 ## Features/Bugs/Missing:
+Cannot take bidirectional symbols 
+``<==>``
 
 ### Features and Bugs 
 All features requested by the assignment specification are implemented and unit tested with none missing. At this stage our static and run-time testing was unable to turn up any bugs and all tests pass each time they're run.
@@ -87,6 +88,8 @@ The app also takes an optional `-h | --help` flag for printing out a description
 * ``BackwardChaining.hpp``  -Provides the implementation of the backward chaining method for solving a propositional logic query.
 
 ## Summary report:
+Run-time research report
+[https://github.com/CormacCollins/Inference-Engine/tree/master/Report]
 
 ### Taks Distribution
 
