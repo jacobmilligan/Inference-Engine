@@ -1,7 +1,5 @@
 # Readme.md
 
---
-
 ## Student Details:
 
 **Cormac Collins** - **Id**: 100655400
@@ -39,8 +37,7 @@ Testing Lists include:
 	
 Text files used are stored in the ``/Tests// folder ranging from test1.txt - test19.txt
 
-
-##Acknowledgements/Resources:
+## Acknowledgements/Resources:
 
 Eli Bendersky's article on precedence climbing for parsing complex expressions assisted us in developing a robust parser for propositional logic. ([http://eli.thegreenplace.net/2012/08/02/parsing-expressions-by-precedence-climbing](http://eli.thegreenplace.net/2012/08/02/parsing-expressions-by-precedence-climbing))
 
