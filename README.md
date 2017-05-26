@@ -11,6 +11,8 @@
 **Group Number** : COS30019\_A02\_T036
 
 ## Features/Bugs/Missing:
+Cannot take bidirectional symbols 
+``<==>``
 
 ### Features and Bugs 
 All features requested by the assignment specification are implemented and unit tested with none missing. At this stage our static and run-time testing was unable to turn up any bugs and all tests pass each time they're run.
