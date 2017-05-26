@@ -19,9 +19,15 @@ namespace ie {
 
 class ASTVisitor;
 
+/// @brief ASTNode is a node used in the Abstract Syntax Tree produced by the
+/// parser with a single virtual accept() method for accepting a visitor
 class ASTNode {
 public:
     using Child = std::unique_ptr<ASTNode>;
+
+    /// @brief Abstract method for accepting a visitor
+    /// @param visitor The visitor to accept
+    /// @return Optional true or false return
     virtual bool accept(ASTVisitor& visitor) const = 0;
 };
 

@@ -22,34 +22,35 @@
 
 namespace ie {
 
-
+/// @brief ResolutionVisitor visits the AST of a clause and returns a boolean
+/// value indicating its truth value based on the given knowledge base
 class ResolutionVisitor : public ASTVisitor {
 public:
+    /// @brief Initializes the visitor
     ResolutionVisitor() {}
 
+    /// @brief Visits a sentence and solves it
+    /// @param sentence The sentence to visit
+    /// @return True if KB entails, false otherwise
     bool visit(const Sentence& sentence) override;
-
+    /// @brief Visits an atomic sentence and solves it
+    /// @param atom The atomic to visit
+    /// @return True if KB entails, false otherwise
     bool visit(const AtomicSentence& atom) override;
 
+    /// @brief Visits a complex sentence and solves it
+    /// @param complex The complex sentence to visit
+    /// @return True if KB entails, false otherwise
     bool visit(const ComplexSentence& complex) override;
 
-    std::vector<std::string> get_symbols();
-
-    std::unordered_map<std::string, bool> get_symbols_map();
-
-    //calculates result of operator on left or right value
-    //If only lVal then it will be the negation operator and will calculate
+    /// @brief calculates result of operator on left or right value
+    /// If only lVal then it will be the negation operator and will calculate
     bool calculate(TokenType logic_operator, bool lVal, bool rVal);
 
-    //Public call to return overall results
-    bool get_solution(const std::unordered_map<std::string, bool>& modal, const Sentence& complex);
+    /// @brief call to return overall results
+    bool get_solution(const std::unordered_map<std::string, bool>& model, const Sentence& complex);
 
-    //Public call to return overall results
-    bool get_solution(const std::unordered_map<std::string, bool>& modal, const ComplexSentence& complex);
-
-    //get solution atomic version
-    bool get_solution(const std::unordered_map<std::string, bool>& modal, const AtomicSentence& atomic);
-
+    /// @brief The value found of all symbols in the clause
     std::unordered_map<std::string, bool> symbol_values_;
 
 private:

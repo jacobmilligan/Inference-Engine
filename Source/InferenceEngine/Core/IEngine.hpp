@@ -20,19 +20,23 @@
 
 namespace ie {
 
-
+/// @brief IEngine is an inference engine able to be told and asked information
+/// via a file input using propositional logic
 class IEngine {
 public:
-    IEngine()
-    {}
-
+    /// @brief Infers the TELL and ASK statement given in the file using
+    /// the given inference method
+    /// @param method_str String representation of the inference method to use
+    /// @param filepath Path to the file to infer
     void infer(const std::string& method_str, const sky::Path& filepath);
-
 private:
     KnowledgeBase kb_;
     Parser parser_;
     ClauseFinder finder_;
 
+    /// @brief Gets a method enum for a string
+    /// @param method_str String representation of the method to use
+    /// @return Inference method enum representation
     InferenceMethod get_method(const std::string& method_str);
 };
 

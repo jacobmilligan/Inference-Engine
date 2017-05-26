@@ -15,18 +15,14 @@
 
 namespace ie {
 
-    bool Symbol::GetValue() const
+    bool Symbol::value() const
     {
         return value_;
     }
 
-    std::string Symbol::GetSymbolName() const
+    std::string Symbol::name() const
     {
         return symbolName_;
-    }
-
-    void Symbol::SetValue(bool val) {
-        value_ = val;
     }
 
     Symbol::Symbol() {

@@ -17,23 +17,28 @@
 
 namespace ie {
 
-    class Symbol {
-    private:
-        std::string symbolName_;
-        bool value_ = false;
+/// @brief Symbol is a single propositional symbol with a boolean value
+/// associated with it
+class Symbol {
+public:
+    /// @brief Initializes the symbol with default values
+    Symbol();
+    /// @brief Initializes the symbol with the given values
+    /// @param s The string representation of the symbol
+    /// @param val The symbols boolean value
+    Symbol(std::string s, bool val) : symbolName_ (s), value_(val) {};
 
-    public:
+    /// @brief Gets the symbols boolean value
+    /// @return The symbols boolean value
+    bool value() const;
+
+    /// @brief Gets the symbols string representation
+    /// @return The symbols string representation
+    std::string name() const;
+private:
+    std::string symbolName_;
+    bool value_ = false;
+};
 
 
-        bool hasConjunctionConnective;
-        Symbol();
-
-        Symbol(std::string s, bool val) : symbolName_ (s), value_(val) {};
-
-        bool GetValue() const;
-
-        std::string GetSymbolName() const;
-
-        void SetValue(bool val);
-    };
 }

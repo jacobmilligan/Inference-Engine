@@ -100,7 +100,7 @@ void KnowledgeBase::ask(const InferenceMethod method, const Symbol& q)
             for ( auto& f : facts_ ) {
                 facts.emplace(f.first, true);
             }
-            auto response = bc.bc_entails(rules, q.GetSymbolName(), facts);
+            auto response = bc.bc_entails(rules, q.name(), facts);
             if ( response ) {
                 std::cout << "YES: " << join(bc.path(), ", ");
             } else {
@@ -111,6 +111,21 @@ void KnowledgeBase::ask(const InferenceMethod method, const Symbol& q)
         default:
             std::cout << "IEngine: Invalid ASK statement" << std::endl;
     }
+}
+
+const std::unordered_map<std::string, const Sentence*>
+KnowledgeBase::as_sentence() const
+{
+    std::unordered_map<std::string, const Sentence*> result;
+    for ( auto& r : rules_ ) {
+        auto as_sentence = dynamic_cast<const Sentence*>(r.second);
+        result.emplace(r.first, as_sentence);
+    }
+    for ( auto& f : facts_ ) {
+        auto as_sentence = dynamic_cast<const Sentence*>(f.second);
+        result.emplace(f.first, as_sentence);
+    }
+    return result;
 }
 
 

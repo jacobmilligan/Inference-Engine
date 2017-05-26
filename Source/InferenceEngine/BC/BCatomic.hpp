@@ -15,9 +15,7 @@
 
 #pragma once
 
-/// -----------------------------------------------------------
-///container for lhs atomic values and tokens during BC search
-// ------------------------------------------------------------
+///@brief container for lhs atomic values and tokens during BC search
 namespace ie {
     class BCatomic{
     public:

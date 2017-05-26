@@ -44,13 +44,16 @@ public:
     /// @return The symbols container
     const std::vector<std::string>& symbols() const;
 
+    /// @brief List of the facts found in the clause
+    /// @return The facts
     const std::vector<const AtomicSentence*> facts() const;
 
-    const std::vector<std::string>& positive_atomics() const;
-
+    /// @brief Clears all internal containers
     void clear();
 
-
+    /// @brief Gets all the connectives found in the clause in the order they
+    /// were found
+    /// @return The stack of connectives
     const std::stack<TokenType> connectives() const;
 
 private:

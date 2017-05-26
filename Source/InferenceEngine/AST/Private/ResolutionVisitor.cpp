@@ -68,34 +68,14 @@ bool ResolutionVisitor::calculate(TokenType logic_operator, bool lVal, bool rVal
     }
 }
 
-std::vector<std::string> ResolutionVisitor::get_symbols() {
-    return symbols_;
-}
-
 //Return result value for symbol name
 bool ResolutionVisitor::solve(Token tok) {
     return symbol_values_[tok.literal];
 }
 
-bool ResolutionVisitor::get_solution(const std::unordered_map<std::string, bool>& modal, const Sentence& complex) {
-    symbol_values_ = modal;
+bool ResolutionVisitor::get_solution(const std::unordered_map<std::string, bool>& model, const Sentence& complex) {
+    symbol_values_ = model;
     return complex.accept(*this);
 }
-
-bool ResolutionVisitor::get_solution(const std::unordered_map<std::string, bool>& modal, const ComplexSentence& complex) {
-    symbol_values_ = modal;
-    return complex.accept(*this);
-}
-
-bool ResolutionVisitor::get_solution(const std::unordered_map<std::string, bool>& modal, const AtomicSentence& atomic) {
-    symbol_values_ = modal;
-    return atomic.accept(*this);
-}
-
-std::unordered_map<std::string, bool> ResolutionVisitor::get_symbols_map() {
-    return symbol_values_;
-}
-
-
 
 }

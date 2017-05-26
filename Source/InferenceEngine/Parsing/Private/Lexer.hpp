@@ -46,6 +46,8 @@ struct Token {
     uint32_t pos;
 };
 
+/// @brief Tokenizes some input string according to the language of
+/// propositional logic
 class Lexer {
 public:
     using Iterator = std::vector<Token>::iterator;
@@ -53,11 +55,21 @@ public:
 
     Lexer();
 
+    /// @brief Lexically analyzes the string
+    /// @param str The string to lex
     void lex(const std::string& str);
 
+    /// @brief Gets a token at the given position
+    /// @param pos The position to get
+    /// @return The token
     Token token_at(const uint32_t pos);
 
+    /// @brief Iterator to the first token produced by the lexer
+    /// @return Iterator
     Iterator tokbegin();
+
+    /// @brief Iterator to the after the last token produced by the lexer
+    /// @return Iterator
     Iterator tokend();
 private:
     std::unordered_map<std::string, Token> lexeme_map_;

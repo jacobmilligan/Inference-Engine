@@ -28,11 +28,21 @@ enum class InferenceMethod {
     unknown
 };
 
+/// @brief KnowledgeBase is a storage for a KB Agents knowledge representation
 class KnowledgeBase {
 public:
+    /// @brief Tells the knowledge base using an AST produced by the result
+    /// of parsing a string
+    /// @param ast The AST to tell with
     void tell(const std::vector<ASTNode::Child>& ast);
+
+    /// @brief Asks a question of the knowledge base using a given inference
+    /// method and a symbol
+    /// @param method The method to use to infer q
+    /// @param q The symbol to ask the knowledge base
     void ask(const InferenceMethod method, const Symbol& q);
 
+    /// @brief Clears the knowledge bases internal containers
     inline void clear()
     {
         finder_.clear();
@@ -42,34 +52,31 @@ public:
         facts_.clear();
     }
 
-    const std::unordered_map<std::string, bool>& symbols() const
+    /// @brief Gets all the symbols found in the KB
+    /// @return List of symbols
+    inline const std::unordered_map<std::string, bool>& symbols() const
     {
         return symbols_;
     }
 
-    const std::unordered_map<std::string, const ComplexSentence*>& rules() const
+    /// @brief Gets all the rules in KB
+    /// @return list of rules
+    inline const std::unordered_map<std::string, const ComplexSentence*>& rules() const
     {
         return rules_;
     }
 
-    const std::unordered_map<std::string, const AtomicSentence*>& facts() const
+    /// @brief Gets all facts (atomic sentences told to KB via TELL) in KB
+    /// @return The facts in KB
+    inline const std::unordered_map<std::string, const AtomicSentence*>& facts() const
     {
         return facts_;
     }
 
-    const std::unordered_map<std::string, const Sentence*> as_sentence() const
-    {
-        std::unordered_map<std::string, const Sentence*> result;
-        for ( auto& r : rules_ ) {
-            auto as_sentence = dynamic_cast<const Sentence*>(r.second);
-            result.emplace(r.first, as_sentence);
-        }
-        for ( auto& f : facts_ ) {
-            auto as_sentence = dynamic_cast<const Sentence*>(f.second);
-            result.emplace(f.first, as_sentence);
-        }
-        return result;
-    };
+    /// @brief Gets the entire knowledge base as a conjunction of clauses - a
+    /// single sentence
+    /// @return KB as a sentence
+    const std::unordered_map<std::string, const Sentence*> as_sentence() const;
 
 private:
     ClauseFinder finder_;

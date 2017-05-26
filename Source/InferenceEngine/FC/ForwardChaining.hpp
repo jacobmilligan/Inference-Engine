@@ -22,6 +22,8 @@
 
 namespace ie {
 
+/// @brief ChainingResult wraps a result from the FC method with a boolean
+/// result and a path taken for inference
 struct ChainingResult {
     ChainingResult()
         : value(false)
@@ -33,18 +35,31 @@ struct ChainingResult {
 
 class FC {
 public:
+    /// @brief Checks if KB entails q according to the Forward Chaining
+    /// inference method
+    /// @param kb The knowledge base to check
+    /// @param q The query - a propositional symbol
+    /// @return The result
     ChainingResult fc_entails(const KnowledgeBase& kb, const Symbol& q) const;
 
+    /// @brief Gets a sentence as a complex sentence
+    /// @param sentence The sentence to get
+    /// @return Sentence as a complex sentence
     inline const ComplexSentence* as_complex(const Sentence* sentence) const
     {
         return dynamic_cast<const ComplexSentence*>(sentence);
     }
 
+    /// @brief Gets a sentence as an atomic sentence
+    /// @param sentence The sentence to get
+    /// @return Sentence as a atomic sentence
     inline const AtomicSentence* as_atomic(const Sentence* sentence) const
     {
         return dynamic_cast<const AtomicSentence*>(sentence);
     }
 
+    /// @brief The path taken by the algorithm so far
+    /// @return The path
     inline const std::vector<std::string>& path() const
     {
         return path_;

@@ -20,7 +20,7 @@ namespace ie {
 
 bool pl_true(const Symbol& alpha, const Model& model)
 {
-    return model.is_true(alpha.GetSymbolName());
+    return model.is_true(alpha.name());
 }
 
 bool pl_true(const KnowledgeBase& kb, const Model& model)
@@ -54,11 +54,11 @@ bool TruthTable::tt_check_all(const KnowledgeBase& kb, const Symbol& alpha,
         auto p = Symbol(symbols.begin()->first, symbols.begin()->second);
         // rest <- REST(symbols)
         auto rest = symbols;
-        rest.erase(p.GetSymbolName());
+        rest.erase(p.name());
         // Model U true
-        auto left = model.extend(p.GetSymbolName(), true);
+        auto left = model.extend(p.name(), true);
         // Model U false
-        auto right = model.extend(p.GetSymbolName(), false);
+        auto right = model.extend(p.name(), false);
 
         return tt_check_all(kb, alpha, rest, left)
             && tt_check_all(kb, alpha, rest, right);

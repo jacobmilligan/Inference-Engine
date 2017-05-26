@@ -52,7 +52,7 @@ ChainingResult FC::fc_entails(const KnowledgeBase& kb, const Symbol& q) const
         agenda.pop();
 
         // Check if at the end - if so add it to the path and return
-        if ( p == q.GetSymbolName() ) {
+        if ( p == q.name() ) {
             result.path.push_back(p);
             result.value = true;
             return result;

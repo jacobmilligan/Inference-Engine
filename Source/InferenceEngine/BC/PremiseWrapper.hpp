@@ -16,9 +16,7 @@
 #include "InferenceEngine/Core/Symbol.hpp"
 #include "InferenceEngine/BC/BCatomic.hpp"
 
-/// -----------------------------------------------------------
-/// Wrapper for entire premise both lhs and rhs ---------------
-// ------------------------------------------------------------
+/// @brief Wrapper for entire premise both lhs and rhs
 namespace ie {
     class PremiseWrapper{
     public:
