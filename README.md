@@ -6,7 +6,12 @@ __Jacob Milligin__   - __Id__:  100660682
 __Group Number__ : COS30019_A02_T036
 ---------------------------------
 ##Features/Bugs/Missing:
-Any issues with Chaining? Or constraints?
+ 
+ Testing framework used for research. Called from command line will output results to terminal and also place in the results folder in the *inference.csv* and *time.csv* files.
+ 
+```python 
+	tester.py <filename> <test-number>
+```
 
 --------------------------------------------
 ##Test cases:
@@ -16,7 +21,7 @@ See the *Tests* folder for the full range of unit testing.
 
 Testing Lists include:
 	1.) *TruthTableTests*
-	2.)*Visitor Tests*
+	2.)* Visitor Tests*
 	3.)  *Parser Tests*
 	4.) *KBTests*
 	5.) *FCTests*
@@ -29,13 +34,13 @@ Testing files are also stored in the *Tests* folder randing from test1.txt - tes
 ##Acknowledgements/Resources:
 
 Jacob Visitor pattern resources?
+[http://eli.thegreenplace.net/2012/08/02/parsing-expressions-by-precedence-climbing]
 
-Jacob Reference enginge:
-
+Underlying engine components (Jacob Milligin):
+[https://github.com/jacobmilligan/Skyrocket]
 
 Truth Table, FC & BC resources:
-- book structure and architecture (as will be discussed in notes)
-
+Russell, S. J, Norvig, P. (2010) *Artificial Intelligence A Modern Approach*, Third Edition, Upper Saddle River. New Jersey: Pearson Education Inc.
 ------------------------------------------------------
 ## Notes
 
@@ -84,19 +89,21 @@ The app also takes an optional `-h | --help` flag for printing out a description
 
 __Jacob Milligin__
 
-* System Architecture
-* Parsing functionality
-* Visitor Pattern implementation and Classes
-* Forward Chaining Algorithm
+
+* System Architecture 5%
+* Parsing functionality 20%
+* Visitor Pattern implementation and Classes 5%
+* Forward Chaining Algorithm 10%
+
 
 __Cormac Collins__
 
-* Truth Table Algorithm
-* ResolutionVisitor
-* BackwardChaining
+* Truth Table Algorithm 20%
+* ResolutionVisitor 10%
+* BackwardChaining 10%
 
 __Joint tasks__
 
-* Readme.md
-* Run-time research
+* Readme.md 5%
+* Run-time research 15%
 
