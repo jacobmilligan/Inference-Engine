@@ -28,14 +28,15 @@ For each individual component of the assignment significant unit testing was uti
 The unit tests used can be found under the ``/Tests/`` folder for the full range of unit test files used.
 
 Testing Lists include:
-	1.) *TruthTableTests*
-	2.) *VisitorTests*
-	3.) *ParserTests*
-	4.) *KBTests*
-	5.) *FCTests*
-	6.) *BackChainTests*
+
+1. *TruthTableTests*
+2. *VisitorTests*
+3. *ParserTests*
+4. *KBTests*
+5. *FCTests*
+6. *BackChainTests*
 	
-Text files used are stored in the ``/Tests// folder ranging from test1.txt - test19.txt
+Text files used are stored in the ``/Tests/`` folder ranging from test1.txt - test19.txt
 
 ## Acknowledgements/Resources:
 
